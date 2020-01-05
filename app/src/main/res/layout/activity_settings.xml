@@ -6,6 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".Activities.SettingsActivity">
 
+    <include
+        android:id="@+id/settings_toolbar"
+        layout="@layout/appbar_layout"/>
+
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
@@ -16,7 +20,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         app:civ_border_color="@color/colorPrimary"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="100dp"
         />
 
     <EditText

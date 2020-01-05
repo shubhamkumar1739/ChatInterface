@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.chatinterface.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,6 +32,8 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText userName,userStatus;
     private CircleImageView userProfileImage;
     private String currentUserId;
+    private Toolbar settingToolbar;
+
 
     private FirebaseAuth mauth;
     private DatabaseReference rootRef;
@@ -70,6 +73,12 @@ public class SettingsActivity extends AppCompatActivity {
         userName=findViewById(R.id.set_user_name);
         userStatus=findViewById(R.id.set_profile_status);
         userProfileImage=findViewById(R.id.profile_image);
+        settingToolbar = findViewById(R.id.settings_toolbar);
+        setSupportActionBar(settingToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setTitle("Account Settings");
+
 
 
     }
@@ -90,11 +99,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         else{
-            HashMap<String,String> profileMap=new HashMap<>();
+            HashMap<String,Object> profileMap=new HashMap<>();
             profileMap.put("uid",currentUserId);
             profileMap.put("name",setUserName);
             profileMap.put("status",setUserStatus);
-            rootRef.child("Users").child(currentUserId).setValue(profileMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            rootRef.child("Users").child(currentUserId).updateChildren(profileMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
 

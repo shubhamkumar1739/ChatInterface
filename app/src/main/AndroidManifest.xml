@@ -16,7 +16,9 @@
             android:name=".Activities.FindFriendsActivity"
             android:parentActivityName=".Activities.MainActivity"></activity>
         <activity android:name=".Activities.PhoneLoginActivity" />
-        <activity android:name=".Activities.SettingsActivity" />
+        <activity android:name=".Activities.SettingsActivity"
+            android:parentActivityName=".Activities.MainActivity"
+            />
         <activity android:name=".Activities.RegisterActivity" />
         <activity android:name=".Activities.LoginActivity" />
         <activity android:name=".Activities.MainActivity">
