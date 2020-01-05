@@ -16,10 +16,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/chat_toolbar"
-        android:layout_above="@id/chat_linear_layout"/>
+        android:layout_above="@id/chat_linear_layout"
+        android:layout_marginBottom="6dp"/>
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/chat_linear_layout"
         android:layout_alignParentStart="true"
         android:layout_width="match_parent"
@@ -30,13 +31,28 @@
         android:background="@android:color/background_light">
 
 
+        <ImageButton
+            android:id="@+id/send_files_btn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/send_files"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:backgroundTint="@android:color/white"/>
+
+
+
     <EditText
         android:id="@+id/input_message"
-        android:layout_width="340dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="please type a message here"
         android:padding="15dp"
-        />
+        android:maxLines="5"
+        android:layout_toEndOf="@+id/send_files_btn"
+        android:layout_toStartOf="@+id/send_message_btn"
+        android:layout_toRightOf="@+id/send_files_btn"
+        android:layout_toLeftOf="@+id/send_message_btn" />
 
 
         <ImageButton
@@ -44,10 +60,13 @@
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:src="@drawable/send_message"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:backgroundTint="@android:color/white"/>
 
-            />
 
 
-    </LinearLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

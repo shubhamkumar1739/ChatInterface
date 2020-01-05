@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         public TextView senderMessageText, receiverMessageText;
         public CircleImageView receiverProfileImage;
+        public ImageView message_sender_picture,message_receiver_picture;
 
 
         public MessageViewHolder(@NonNull View itemView) {
@@ -52,6 +54,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             senderMessageText = itemView.findViewById(R.id.sender_msg_text);
             receiverMessageText = itemView.findViewById(R.id.receiver_msg_text);
             receiverProfileImage = itemView.findViewById(R.id.message_profile_image);
+            message_sender_picture = itemView.findViewById(R.id.msg_sender_image_view);
+            message_receiver_picture = itemView.findViewById(R.id.msg_receiver_image_view);
 
 
         }
@@ -114,12 +118,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         });
 
 
+        holder.receiverMessageText.setVisibility(View.GONE);
+        holder.receiverProfileImage.setVisibility(View.GONE);
+        holder.senderMessageText.setVisibility(View.GONE);
+        holder.message_sender_picture.setVisibility(View.GONE);
+        holder.message_receiver_picture.setVisibility(View.GONE);
+
 
         if (frommessageType.equals("text"))
         {
-            holder.receiverMessageText.setVisibility(View.INVISIBLE);
-            holder.receiverProfileImage.setVisibility(View.INVISIBLE);
-            holder.senderMessageText.setVisibility(View.INVISIBLE);
 
 
             if (fromUserId.equals(messageSenderId))
@@ -128,7 +135,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.senderMessageText.setVisibility(View.VISIBLE);
                 holder.senderMessageText.setBackgroundResource(R.drawable.sender_msgs_layout);
                 holder.senderMessageText.setTextColor(BLACK);
-                holder.senderMessageText.setText(messages.getMessage());
+                holder.senderMessageText.setText(messages.getMessage()  + "\n\n" + messages.getTime());
 
 
 
@@ -141,7 +148,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                 holder.receiverMessageText.setBackgroundResource(R.drawable.receiver_msgs_layout);
                 holder.receiverMessageText.setTextColor(BLACK);
-                holder.receiverMessageText.setText(messages.getMessage());
+                holder.receiverMessageText.setText(messages.getMessage() + "\n" + messages.getTime());
+
 
             }
         }
