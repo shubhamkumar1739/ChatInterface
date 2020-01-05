@@ -23,23 +23,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal">-->
-
-<!--                -->
-
-<!--&lt;!&ndash;                <ImageView&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:id="@+id/user_online_status"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_width="18dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_height="15dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_marginTop="5dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:src="@drawable/online"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:visibility="invisible"/>&ndash;&gt;-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="end"
 
 
-<!--            </LinearLayout>-->
+                >
+
+
+
+               <ImageView
+                    android:id="@+id/user_online_status"
+                    android:layout_width="18dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/online"
+                    android:layout_toRightOf="@+id/users_profile_image"
+                   android:visibility="invisible"
+
+
+
+
+                   />
+
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/user_profile_name"
@@ -49,7 +59,8 @@
                 android:text="user name"
                 android:textAlignment="textStart"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:id="@+id/user_status"
@@ -58,7 +69,8 @@
                 android:gravity="start"
                 android:text="user status"
                 android:textAlignment="textStart"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_marginLeft="5dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

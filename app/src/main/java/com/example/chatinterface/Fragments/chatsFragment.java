@@ -78,6 +78,8 @@ public class chatsFragment extends Fragment {
 
         FirebaseRecyclerAdapter<Contacts, ChatsViewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, ChatsViewHolder>(options) {
             @Override
+
+
             protected void onBindViewHolder(@NonNull final ChatsViewHolder holder, int position, @NonNull Contacts model) {
                 final String user_Ids = getRef(position).getKey();
                 final String[] ret_Img = {"default_image"};
@@ -97,19 +99,41 @@ public class chatsFragment extends Fragment {
                             final String retName = dataSnapshot.child("name").getValue().toString();
                             final String retStatus = dataSnapshot.child("status").getValue().toString();
                             holder.userName.setText(retName);
-                            holder.userStatus.setText(" Last seen " + "\n" + " Date " + " Time ");
+
+
+                            if (dataSnapshot.child("UserState").hasChild("state")) {
+
+                                String state = dataSnapshot.child("UserState").child("state").getValue().toString();
+                                String date = dataSnapshot.child("UserState").child("date").getValue().toString();
+                                String time = dataSnapshot.child("UserState").child("time").getValue().toString();
+
+                                if (state.equals("online")) {
+                                    holder.userStatus.setText("online");
+
+
+                                } else if (state.equals("offline")) {
+                                    holder.userStatus.setText(" Last seen:  " + "\n" + date + " " + time);
+
+
+                                }
+
+                            } else {
+
+                                holder.userStatus.setText("offline");
+
+
+                            }
+
 
                             holder.itemView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     Intent chatIntent = new Intent(getContext(), ChatActivity.class);
-                                    chatIntent.putExtra("visit_user_id",user_Ids);
-                                    chatIntent.putExtra("visit_user_name",retName);
+                                    chatIntent.putExtra("visit_user_id", user_Ids);
+                                    chatIntent.putExtra("visit_user_name", retName);
                                     //chatIntent.putExtra("visit_user_image",ret_Img);
 
                                     startActivity(chatIntent);
-
-
 
 
                                 }
@@ -128,6 +152,7 @@ public class chatsFragment extends Fragment {
 
 
             }
+
 
             @NonNull
             @Override

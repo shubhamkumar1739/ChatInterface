@@ -32,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 
@@ -126,6 +127,48 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+
+
+
+
+    private void DispalyLastSeen(){
+        RootRef.child("Users").child(messageSenderId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child("UserState").hasChild("state")) {
+
+                    String state = dataSnapshot.child("UserState").child("state").getValue().toString();
+                    String date = dataSnapshot.child("UserState").child("date").getValue().toString();
+                    String time = dataSnapshot.child("UserState").child("time").getValue().toString();
+
+                    if (state.equals("online")) {
+                        userLastSeen.setText("online");
+
+
+                    } else if (state.equals("offline")) {
+                        userLastSeen.setText(" Last seen:  " + "\n" + date + " " + time);
+
+
+                    }
+
+                } else {
+
+                    userLastSeen.setText("offline");
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
 
     @Override
     protected void onStart() {

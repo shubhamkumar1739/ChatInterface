@@ -23,15 +23,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
    private Toolbar mtoolbar;
    private ViewPager myViewpager;
    private TabLayout myTabLayout;
    private TabsAccessorAdapter myTabAccessorAdapter;
 
-   private FirebaseUser currentUser;
+
    private FirebaseAuth mauth;
    private DatabaseReference rootRef;
+   private String currentUserId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         myTabLayout=findViewById(R.id.main_tabs);
         myTabLayout.setupWithViewPager(myViewpager);
         mauth=FirebaseAuth.getInstance();
-        currentUser=mauth.getCurrentUser();
+
         rootRef= FirebaseDatabase.getInstance().getReference();
 
 
@@ -59,13 +65,49 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        FirebaseUser currentUser = mauth.getCurrentUser();
+
         if(currentUser == null){
 
             sendUserToLoginActivity();
 
+
         }
         else{
+
+            UpdateUserStatus("online");
+
             verifyUserExistence();
+        }
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+
+        FirebaseUser currentUser = mauth.getCurrentUser();
+
+        if(currentUser != null){
+            UpdateUserStatus("offline");
+
+
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        FirebaseUser currentUser = mauth.getCurrentUser();
+
+
+        if(currentUser != null){
+            UpdateUserStatus("offline");
+
+
         }
     }
 
@@ -115,6 +157,11 @@ public class MainActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
 
         if(item.getItemId() == R.id.logout){
+
+            UpdateUserStatus("offline");
+
+
+
             mauth.signOut();
             sendUserToLoginActivity();
 
@@ -147,6 +194,37 @@ public class MainActivity extends AppCompatActivity {
     private void sendUserToFindFriendActivity() {
         Intent findFriendIntent=new Intent(MainActivity.this,FindFriendsActivity.class);
         startActivity(findFriendIntent);
+
+    }
+
+    private void UpdateUserStatus(String state)
+    {
+        String saveCurrentTime,saveCurrentDate;
+        Calendar calendar = Calendar.getInstance();
+
+        SimpleDateFormat currentDate = new SimpleDateFormat("MM dd, yyyy");
+        saveCurrentDate = currentDate.format(calendar.getTime());
+
+        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
+        saveCurrentTime = currentTime.format(calendar.getTime());
+
+        HashMap<String,Object> onlineStateMap = new HashMap<>();
+        onlineStateMap.put("time",saveCurrentTime);
+        onlineStateMap.put("date",saveCurrentDate);
+        onlineStateMap.put("state",state);
+
+        currentUserId = mauth.getCurrentUser().getUid();
+        rootRef.child("Users").child(currentUserId).child("UserState").updateChildren(onlineStateMap);
+
+
+
+
+
+
+
+
+
+
 
     }
 }
