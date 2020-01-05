@@ -22,6 +22,15 @@ public class UsersModel {
         return uid;
     }
 
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public void setUid(String uid) {
         this.uid = uid;
     }
@@ -29,7 +38,6 @@ public class UsersModel {
     private String name;
     private String status;
     private String uid;
-
-
+    private String image;
 
 }

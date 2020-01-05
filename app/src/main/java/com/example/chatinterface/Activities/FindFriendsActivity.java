@@ -22,7 +22,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -67,7 +66,7 @@ public class FindFriendsActivity extends AppCompatActivity {
 
                         holder.userName.setText(model.getName());
                         holder.userStatus.setText(model.getStatus());
-                        Picasso.get().load(R.drawable.profile_image).into(holder.profileImage);
+                        Picasso.get().load(model.getImage()).into(holder.profileImage);
 
 
                         holder.itemView.setOnClickListener(new View.OnClickListener() {

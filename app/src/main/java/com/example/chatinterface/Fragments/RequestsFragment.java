@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -59,6 +60,7 @@ public class RequestsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         RequestFragmentView = inflater.inflate(R.layout.fragment_requests, container, false);
 
@@ -98,10 +100,12 @@ public class RequestsFragment extends Fragment {
 
 
                 final String list_user_id = getRef(position).getKey();
-                Log.d(TAG, "userID: "+list_user_id);
+                Log.d(TAG, "userID: "+ list_user_id);
 
                 // Code To Find Request Type (Received)...
                 ValueEventListener eventListener = new ValueEventListener() {
+
+
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // (Key-I) For Getting Key Info Inside Chat Requests Node...
@@ -119,25 +123,36 @@ public class RequestsFragment extends Fragment {
                                         // ----------------------------------------
                                         // Code To Find Users With Received Requests...
                                         ValueEventListener listener = new ValueEventListener() {
+
+
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                                                 // For Getting Keys Info Inside Users Node....
                                                 for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                                     String key = snapshot.getKey();
+
                                                     // Check If Received User UID = Key From List...
                                                     if (list_user_id != null && list_user_id.equals(key)) {
+
                                                         // Get Info Of Only Received Request Keys...
                                                         DatabaseReference userReference = UserRef.child(key);
                                                         ValueEventListener valueEventListener = new ValueEventListener() {
+
+
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                 UsersModel usersModel = dataSnapshot.getValue(UsersModel.class);
                                                                 if (usersModel != null){
                                                                     String user_name = usersModel.getName();
                                                                     String userStatus = usersModel.getStatus();
+                                                                    String userImg = usersModel.getImage();
+
+
 
                                                                     holder.userName.setText(user_name);
                                                                     holder.userStatus.setText(userStatus);
+                                                                    Picasso.get().load(userImg).placeholder(R.drawable.profile_image).into(holder.profileImage); //adding image here
 
                                                                 }else {
                                                                     Log.d(TAG, "Users Model Empty!");

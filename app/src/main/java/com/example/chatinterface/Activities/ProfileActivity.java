@@ -28,8 +28,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private String recieverUserId, current_State, senderUserId;
+    private String receiverUserId, current_State, senderUserId;
     private CircleImageView userProfileImage;
+
     private TextView userProfileName, userProfileStatus;
     private Button sendMessageRequestButton, declineRequestButton;
     private DatabaseReference userRef, chatRequestRef, contactsRef, notificationRef;
@@ -50,7 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        recieverUserId = getIntent().getExtras().get("visit_user_id").toString();
+        receiverUserId = getIntent().getExtras().get("visit_user_id").toString();
         senderUserId = mAuth.getCurrentUser().getUid();
 
 
@@ -67,14 +68,15 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void retrieveUserInfo() {
-        userRef.child(recieverUserId).addValueEventListener(new ValueEventListener() {
+        userRef.child(receiverUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("image"))) {
+                    String userImage = dataSnapshot.child("image").getValue().toString();
                     String userName = dataSnapshot.child("name").getValue().toString();
                     String userStatus = dataSnapshot.child("status").getValue().toString();
 
-                    Picasso.get().load(R.drawable.profile_image).into(userProfileImage);
+                    Picasso.get().load(userImage).placeholder(R.drawable.profile_image).into(userProfileImage);
                     userProfileName.setText(userName);
                     userProfileStatus.setText(userStatus);
 
@@ -106,9 +108,9 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.hasChild(recieverUserId)) {
+                if (dataSnapshot.hasChild(receiverUserId)) {
 
-                    String req_type = dataSnapshot.child(recieverUserId).child("request_type").getValue().toString();
+                    String req_type = dataSnapshot.child(receiverUserId).child("request_type").getValue().toString();
 
                     if (req_type.equals("sent")) {
                         current_State = "request_sent";
@@ -132,9 +134,11 @@ public class ProfileActivity extends AppCompatActivity {
                     contactsRef.child(senderUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChild(recieverUserId)) {
+                            if (dataSnapshot.hasChild(receiverUserId)) {
                                 current_State = "friends";
                                 sendMessageRequestButton.setText("Remove this contact");
+
+
                             }
                         }
 
@@ -153,7 +157,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        if (!senderUserId.equals(recieverUserId)) {
+        if (!senderUserId.equals(receiverUserId)) {
             sendMessageRequestButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -193,12 +197,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void removeSpecificContact() {
 
-        contactsRef.child(senderUserId).child(recieverUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+        contactsRef.child(senderUserId).child(receiverUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
                 if (task.isSuccessful()) {
-                    contactsRef.child(recieverUserId).child(senderUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    contactsRef.child(receiverUserId).child(senderUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
@@ -227,21 +231,21 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void acceptChatRequest() {
 
-        contactsRef.child(senderUserId).child(recieverUserId).child("Contacts").setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
+        contactsRef.child(senderUserId).child(receiverUserId).child("Contacts").setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
 
-                    contactsRef.child(recieverUserId).child(senderUserId).child("Contacts").setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
+                    contactsRef.child(receiverUserId).child(senderUserId).child("Contacts").setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
 
-                                chatRequestRef.child(recieverUserId).child(senderUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                chatRequestRef.child(receiverUserId).child(senderUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            chatRequestRef.child(senderUserId).child(recieverUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            chatRequestRef.child(senderUserId).child(receiverUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
 
@@ -274,12 +278,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void cancelChatRequest() {
-        chatRequestRef.child(senderUserId).child(recieverUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+        chatRequestRef.child(senderUserId).child(receiverUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
                 if (task.isSuccessful()) {
-                    chatRequestRef.child(recieverUserId).child(senderUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    chatRequestRef.child(receiverUserId).child(senderUserId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
@@ -307,11 +311,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void sendChatRequest() {
 
-        chatRequestRef.child(senderUserId).child(recieverUserId).child("request_type").setValue("sent").addOnCompleteListener(new OnCompleteListener<Void>() {
+        chatRequestRef.child(senderUserId).child(receiverUserId).child("request_type").setValue("sent").addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    chatRequestRef.child(recieverUserId).child(senderUserId).child("request_type").setValue("received").addOnCompleteListener(new OnCompleteListener<Void>() {
+                    chatRequestRef.child(receiverUserId).child(senderUserId).child("request_type").setValue("received").addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
@@ -319,7 +323,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 HashMap<String, String> chatNotificationMap = new HashMap<>();
                                 chatNotificationMap.put("from", senderUserId);
                                 chatNotificationMap.put("type", "request");
-                                notificationRef.child(recieverUserId).push().setValue(chatNotificationMap)
+                                notificationRef.child(receiverUserId).push().setValue(chatNotificationMap)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
