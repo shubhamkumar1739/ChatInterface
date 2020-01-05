@@ -36,4 +36,5 @@ public class Contacts {
     public void setImage(String image) {
         this.image = image;
     }
+
 }
