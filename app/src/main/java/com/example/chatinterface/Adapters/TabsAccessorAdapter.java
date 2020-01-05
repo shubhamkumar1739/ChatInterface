@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.chatinterface.Fragments.ContactsFragment;
 import com.example.chatinterface.Fragments.GroupsFragment;
+import com.example.chatinterface.Fragments.RequestsFragment;
 import com.example.chatinterface.Fragments.chatsFragment;
 
 public class TabsAccessorAdapter extends FragmentPagerAdapter {
@@ -27,13 +28,18 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
                 chatsFragment chatsFragment= new chatsFragment();
                 return chatsFragment;
 
-            case 1:
-                GroupsFragment groupsFragment= new GroupsFragment();
-                return groupsFragment;
 
-            case 2:
+                /*case 1:
+                GroupsFragment groupsFragment= new GroupsFragment();
+                return groupsFragment;*/
+
+           case 1:
                 ContactsFragment contactsFragment= new ContactsFragment();
                 return contactsFragment;
+            case 2:
+                RequestsFragment requestsFragment=new RequestsFragment();
+                return requestsFragment;
+
 
                 default:
                     return null;
@@ -58,11 +64,10 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
                 return "chats";
 
             case 1:
-                return "Groups";
-
+                return "Contacts";
 
             case 2:
-                return "Contacts";
+                return "Requests";
 
             default:
                 return null;

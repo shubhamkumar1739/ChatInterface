@@ -125,26 +125,7 @@ public class ContactsFragment extends Fragment {
 
 
 
-        /*FirebaseRecyclerAdapter<Contacts,RequestViewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, RequestViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull RequestViewHolder holder, int position, @NonNull Contacts model) {
-                holder.itemView.findViewById(R.id.request_accept_btn).setVisibility(View.VISIBLE);
-                holder.itemView.findViewById(R.id.request_cancel_btn).setVisibility(View.VISIBLE);
 
-
-
-
-
-            }
-
-            @NonNull
-            @Override
-            public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-                View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.users_display_layout,viewGroup,false);
-                RequestViewHolder holder=new RequestViewHolder(view);
-                return holder;
-            }
-        };*/
     }
 
 
@@ -161,26 +142,7 @@ public class ContactsFragment extends Fragment {
         }
     }
 
-   /* public static class RequestViewHolder extends RecyclerView.ViewHolder{
 
-        TextView userName,userStatus;
-        CircleImageView profileImage;
-
-        Button acceptButton,cancelButton;
-
-
-
-
-        public RequestViewHolder(@NonNull View itemView) {
-            super(itemView);
-            userName=itemView.findViewById(R.id.user_profile_name);
-            userStatus=itemView.findViewById(R.id.user_status);
-            profileImage=itemView.findViewById(R.id.users_profile_image);
-            acceptButton=itemView.findViewsWithText(R.id.request_accept_btn);
-
-
-        }
-    }*/
 
 
 }
