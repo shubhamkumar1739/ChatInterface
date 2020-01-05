@@ -28,15 +28,15 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
-   private Toolbar mtoolbar;
-   private ViewPager myViewpager;
-   private TabLayout myTabLayout;
-   private TabsAccessorAdapter myTabAccessorAdapter;
+    private Toolbar mtoolbar;
+    private ViewPager myViewpager;
+    private TabLayout myTabLayout;
+    private TabsAccessorAdapter myTabAccessorAdapter;
 
 
-   private FirebaseAuth mauth;
-   private DatabaseReference rootRef;
-   private String currentUserId;
+    private FirebaseAuth mauth;
+    private DatabaseReference rootRef;
+    private String currentUserId;
 
 
     @Override
@@ -44,19 +44,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mtoolbar=findViewById(R.id.main_page_toolbar);
+        mtoolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mtoolbar);
         getSupportActionBar().setTitle("ChatInterface");
 
-        myViewpager=findViewById(R.id.main_tabs_pager);
-        myTabAccessorAdapter=new TabsAccessorAdapter(getSupportFragmentManager());
+        myViewpager = findViewById(R.id.main_tabs_pager);
+        myTabAccessorAdapter = new TabsAccessorAdapter(getSupportFragmentManager());
         myViewpager.setAdapter(myTabAccessorAdapter);
 
-        myTabLayout=findViewById(R.id.main_tabs);
+        myTabLayout = findViewById(R.id.main_tabs);
         myTabLayout.setupWithViewPager(myViewpager);
-        mauth=FirebaseAuth.getInstance();
+        mauth = FirebaseAuth.getInstance();
 
-        rootRef= FirebaseDatabase.getInstance().getReference();
+        rootRef = FirebaseDatabase.getInstance().getReference();
 
 
     }
@@ -68,13 +68,12 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mauth.getCurrentUser();
 
-        if(currentUser == null){
+        if (currentUser == null) {
 
             sendUserToLoginActivity();
 
 
-        }
-        else{
+        } else {
 
             UpdateUserStatus("online");
 
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mauth.getCurrentUser();
 
-        if(currentUser != null){
+        if (currentUser != null) {
             UpdateUserStatus("offline");
 
 
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mauth.getCurrentUser();
 
 
-        if(currentUser != null){
+        if (currentUser != null) {
             UpdateUserStatus("offline");
 
 
@@ -120,11 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if((dataSnapshot.child("name").exists())){
-                    Toast.makeText(MainActivity.this,"welcome",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
+                if ((dataSnapshot.child("name").exists())) {
+                    Toast.makeText(MainActivity.this, "welcome", Toast.LENGTH_SHORT).show();
+                } else {
                     sendUserToSettingsActivity();
                 }
 
@@ -135,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
 
 
     }
@@ -156,22 +152,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
-        if(item.getItemId() == R.id.logout){
+        if (item.getItemId() == R.id.logout) {
 
             UpdateUserStatus("offline");
-
 
 
             mauth.signOut();
             sendUserToLoginActivity();
 
-        }
-        else if(item.getItemId() == R.id.main_find_people){
+        } else if (item.getItemId() == R.id.main_find_people) {
             sendUserToFindFriendActivity();
 
 
-        }
-        else if(item.getItemId() == R.id.settings){
+        } else if (item.getItemId() == R.id.settings) {
             sendUserToSettingsActivity();
 
 
@@ -180,50 +173,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendUserToLoginActivity() {
-        Intent loginIntent=new Intent(MainActivity.this,LoginActivity.class);
+        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(loginIntent);
         finish();
     }
 
     private void sendUserToSettingsActivity() {
-        Intent settingsIntent=new Intent(MainActivity.this,SettingsActivity.class);
+        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(settingsIntent);
     }
 
     private void sendUserToFindFriendActivity() {
-        Intent findFriendIntent=new Intent(MainActivity.this,FindFriendsActivity.class);
+        Intent findFriendIntent = new Intent(MainActivity.this, FindFriendsActivity.class);
         startActivity(findFriendIntent);
 
     }
 
-    private void UpdateUserStatus(String state)
-    {
-        String saveCurrentTime,saveCurrentDate;
+    private void UpdateUserStatus(String state) {
+        String saveCurrentTime, saveCurrentDate;
         Calendar calendar = Calendar.getInstance();
 
-        SimpleDateFormat currentDate = new SimpleDateFormat("dd:MM:yyyy");
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
         saveCurrentDate = currentDate.format(calendar.getTime());
 
         SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
         saveCurrentTime = currentTime.format(calendar.getTime());
 
-        HashMap<String,Object> onlineStateMap = new HashMap<>();
-        onlineStateMap.put("time",saveCurrentTime);
-        onlineStateMap.put("date",saveCurrentDate);
-        onlineStateMap.put("state",state);
+        HashMap<String, Object> onlineStateMap = new HashMap<>();
+        onlineStateMap.put("time", saveCurrentTime);
+        onlineStateMap.put("date", saveCurrentDate);
+        onlineStateMap.put("state", state);
 
         currentUserId = mauth.getCurrentUser().getUid();
         rootRef.child("Users").child(currentUserId).child("UserState").updateChildren(onlineStateMap);
-
-
-
-
-
-
-
-
-
 
 
     }

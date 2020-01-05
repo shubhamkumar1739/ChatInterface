@@ -111,8 +111,10 @@ public class chatsFragment extends Fragment {
                                     holder.userStatus.setText("online");
 
 
-                                } else if (state.equals("offline")) {
-                                    holder.userStatus.setText(" Last seen: " + " " + date + "\n " + time);
+                                }
+
+                                else if (state.equals("offline")) {
+                                    holder.userStatus.setText(" Last seen: " + date + " " + time);
 
 
                                 }

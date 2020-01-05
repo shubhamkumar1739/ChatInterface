@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -123,6 +124,7 @@ public class ChatActivity extends AppCompatActivity {
         UserMessagesList.setLayoutManager(linearLayoutManager);
 
         UserMessagesList.setAdapter(adapter);
+        DispalyLastSeen();
 
 
     }
@@ -133,20 +135,24 @@ public class ChatActivity extends AppCompatActivity {
 
     private void DispalyLastSeen(){
         RootRef.child("Users").child(messageSenderId).addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child("UserState").hasChild("state")) {
 
                     String state = dataSnapshot.child("UserState").child("state").getValue().toString();
                     String date = dataSnapshot.child("UserState").child("date").getValue().toString();
+                    Log.d("date",date);
+
                     String time = dataSnapshot.child("UserState").child("time").getValue().toString();
+                    Log.d("time",time);
 
                     if (state.equals("online")) {
                         userLastSeen.setText("online");
 
 
                     } else if (state.equals("offline")) {
-                        userLastSeen.setText(" Last seen:  " + "\n" + date + " " + time);
+                        userLastSeen.setText(" Last seen: " + date + " " + time);
 
 
                     }
@@ -172,6 +178,8 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+
+
         super.onStart();
 
 
