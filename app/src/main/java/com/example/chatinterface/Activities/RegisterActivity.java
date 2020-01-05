@@ -20,6 +20,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class RegisterActivity extends AppCompatActivity {
     private Button createAccountButton;
@@ -27,6 +28,8 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView alreadyHaveAccountLink;
     private FirebaseAuth mauth;
     private ProgressDialog loadingBar;
+
+
     private DatabaseReference rootRef;
 
 
@@ -88,8 +91,13 @@ public class RegisterActivity extends AppCompatActivity {
 
                     if(task.isSuccessful()){
 
+                        String deviceToken = FirebaseInstanceId.getInstance().getToken();
+
                         String currentUserId=mauth.getCurrentUser().getUid();
+
                         rootRef.child("Users").child(currentUserId).setValue("");
+
+                        rootRef.child("Users").child(currentUserId).child("device_token").setValue(deviceToken);
 
 
                         sendUserToMainActivity();

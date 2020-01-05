@@ -58,7 +58,8 @@ public class ChatActivity extends AppCompatActivity {
     private final List<Messages> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
     private MessageAdapter adapter;
-    private RecyclerView UserMessagesList;
+
+     private RecyclerView UserMessagesList;
 
 
 
@@ -136,8 +137,13 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                 Messages messages = dataSnapshot.getValue(Messages.class);
+
                 messagesList.add(messages);
+
                 adapter.notifyDataSetChanged();
+                UserMessagesList.smoothScrollToPosition(UserMessagesList.getAdapter().getItemCount());
+
+
             }
 
             @Override
