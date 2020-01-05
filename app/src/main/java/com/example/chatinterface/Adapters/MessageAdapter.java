@@ -81,15 +81,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder holder, int i) {
-         String messageSenderId = mAuth.getCurrentUser().getUid();
-         Messages messages = userMessageList.get(i);
+        String messageSenderId = mAuth.getCurrentUser().getUid();
+        Messages messages = userMessageList.get(i);
 
 
-         String fromUserId = messages.getFrom();
-         String frommessageType = messages.getType();
+        String fromUserId = messages.getFrom();
+        String frommessageType = messages.getType();
 
 
-         usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(fromUserId);
+        usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(fromUserId);
 
         usersRef.addValueEventListener(new ValueEventListener() {
 
@@ -153,6 +153,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
             }
         }
+        else if(frommessageType.equals("image"))
+        {
+
+            if(fromUserId.equals(messageSenderId)){
+
+                holder.message_sender_picture.setVisibility(View.VISIBLE);
+                Picasso.get().load(messages.getMessage()).into(holder.message_sender_picture);
+
+
+            }
+            else{
+
+                holder.receiverProfileImage.setVisibility(View.VISIBLE);
+                holder.message_receiver_picture.setVisibility(View.VISIBLE);
+
+                Picasso.get().load(messages.getMessage()).into(holder.message_receiver_picture);
+
+            }
+
+        }
+
+
 
 
     }
