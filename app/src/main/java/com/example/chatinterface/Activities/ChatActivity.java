@@ -98,11 +98,14 @@ public class ChatActivity extends AppCompatActivity {
         msgReceiverId = getIntent().getExtras().get("visit_user_id").toString();
         msgReceiverName = getIntent().getExtras().get("visit_user_name").toString();
         msgReceiverImage = getIntent().getExtras().get("visit_user_image").toString();
+        Log.d("img",msgReceiverImage);
 
         initialiseControllers();
 
 
         userName.setText(msgReceiverName);
+
+
         Picasso.get().load(msgReceiverImage).placeholder(R.drawable.profile_image).into(userImage);
 
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
@@ -219,6 +222,7 @@ public class ChatActivity extends AppCompatActivity {
 
         userName = findViewById(R.id.custom_profile_name);
         userLastSeen = findViewById(R.id.custom_user_last_seen);
+
         userImage = findViewById(R.id.custom_profile_image);
 
         sendMessageButton = findViewById(R.id.send_message_btn);

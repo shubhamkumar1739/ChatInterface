@@ -13,6 +13,7 @@ import com.example.chatinterface.model.Contacts;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +92,7 @@ public class chatsFragment extends Fragment {
                             if (dataSnapshot.hasChild("image")) {
 
                                 ret_Img[0] = dataSnapshot.child("image").getValue().toString();
+                                Log.d("img",ret_Img[0]);
                                 Picasso.get().load(ret_Img[0]).into(holder.profileImage);
 
 
@@ -133,7 +135,8 @@ public class chatsFragment extends Fragment {
                                     Intent chatIntent = new Intent(getContext(), ChatActivity.class);
                                     chatIntent.putExtra("visit_user_id", user_Ids);
                                     chatIntent.putExtra("visit_user_name", retName);
-                                    chatIntent.putExtra("visit_user_image",ret_Img);
+                                    chatIntent.putExtra("visit_user_image",ret_Img[0]);
+                                    Log.d("img",ret_Img[0]);
 
                                     startActivity(chatIntent);
 
