@@ -30,6 +30,7 @@ import com.example.chatinterface.R;
 import com.example.chatinterface.model.Messages;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -39,6 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
@@ -82,7 +84,6 @@ public class ChatActivity extends AppCompatActivity {
     private StorageTask uploadTask;
     private Uri fileUri;
     private ProgressDialog loadingBar;
-
 
 
     @Override
@@ -203,8 +204,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-
-
     private void initialiseControllers() {
 
 
@@ -240,7 +239,6 @@ public class ChatActivity extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
 
 
-
         Calendar calendar = Calendar.getInstance();
 
         SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
@@ -250,7 +248,6 @@ public class ChatActivity extends AppCompatActivity {
         saveCurrentTime = currentTime.format(calendar.getTime());
 
 
-
     }
 
 
@@ -258,10 +255,10 @@ public class ChatActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 438 && resultCode == RESULT_OK && data!= null && data.getData()!= null) {
+        if (requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
 
-            loadingBar.setTitle("Sending Image");
+            loadingBar.setTitle("Sending File");
             loadingBar.setMessage("please wait, while we are sending...");
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
@@ -288,18 +285,15 @@ public class ChatActivity extends AppCompatActivity {
                 final StorageReference filePath = storageReference.child(messagePushId + "." + checker);
 
 
-
                 filePath.putFile(fileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
-
-                    {
-                        if((task.isSuccessful()))
-                        {
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if ((task.isSuccessful())) {
 
                             Map messageTextBody = new HashMap();
                             messageTextBody.put("message", task.getResult().getMetadata().getReference().getDownloadUrl().toString());
-                            messageTextBody.put("type", "text");
+                            messageTextBody.put("name", fileUri.getLastPathSegment());
+                            messageTextBody.put("type", checker);
                             messageTextBody.put("from", messageSenderId);
                             messageTextBody.put("to", msgReceiverId);
                             messageTextBody.put("messageID", messagePushId);
@@ -312,11 +306,30 @@ public class ChatActivity extends AppCompatActivity {
                             messageBodyDetails.put(msgReceiverRef + "/" + messagePushId, messageTextBody);
 
 
-
+                            RootRef.updateChildren(messageBodyDetails);
+                            loadingBar.dismiss();
 
 
                         }
 
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        loadingBar.dismiss();
+                        Toast.makeText(ChatActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+
+
+
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot)
+                    {
+                        double p = (100.0*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
+                        loadingBar.setMessage((int) p + "% Uploading..." );
 
 
 
@@ -326,15 +339,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-            }
-
-
-            else if (checker.equals("image")) {
+            } else if (checker.equals("image")) {
 
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Files");
 
@@ -352,8 +357,7 @@ public class ChatActivity extends AppCompatActivity {
                 uploadTask.continueWithTask(new Continuation() {
                     @Override
                     public Object then(@NonNull Task task) throws Exception {
-                        if (!task.isSuccessful())
-                        {
+                        if (!task.isSuccessful()) {
                             throw task.getException();
                         }
 
@@ -385,15 +389,11 @@ public class ChatActivity extends AppCompatActivity {
                             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
-                                    if (task.isSuccessful())
-                                    {
+                                    if (task.isSuccessful()) {
                                         loadingBar.dismiss();
                                         Toast.makeText(ChatActivity.this, "Message sent successfully", Toast.LENGTH_SHORT).show();
 
-                                    }
-
-                                    else
-                                        {
+                                    } else {
                                         loadingBar.dismiss();
                                         Toast.makeText(ChatActivity.this, "Error", Toast.LENGTH_SHORT).show();
 
@@ -471,8 +471,7 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(this, "First type a message", Toast.LENGTH_SHORT).show();
 
 
-        } else
-            {
+        } else {
 
 
             String msgSenderRef = "Message/" + messageSenderId + "/" + msgReceiverId;
