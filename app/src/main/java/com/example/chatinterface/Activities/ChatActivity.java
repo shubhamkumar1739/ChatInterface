@@ -41,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 
@@ -140,10 +141,18 @@ public class ChatActivity extends AppCompatActivity {
 
                         if (i == 1) {
                             checker = "pdf";
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            intent.setType("application/pdf");
+                            startActivityForResult(intent.createChooser(intent, "Select PDF File"), 438);
 
                         }
                         if (i == 2) {
                             checker = "docx";
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            intent.setType("application/msword");
+                            startActivityForResult(intent.createChooser(intent, "Select MS Word File"), 438);
 
                         }
 
@@ -261,8 +270,72 @@ public class ChatActivity extends AppCompatActivity {
             fileUri = data.getData();
             if (!checker.equals("image")) {
 
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Document Files");
 
-            } else if (checker.equals("image")) {
+                final String msgSenderRef = "Message/" + messageSenderId + "/" + msgReceiverId;
+                final String msgReceiverRef = "Message/" + msgReceiverId + "/" + messageSenderId;
+
+                //storing inside the storage
+
+
+                DatabaseReference UserMessageKeyRef = RootRef.child("Messages").child(messageSenderId).
+                        child(msgReceiverId).push();
+
+                //creating random key to save the file link into db
+
+                final String messagePushId = UserMessageKeyRef.getKey();
+
+                final StorageReference filePath = storageReference.child(messagePushId + "." + checker);
+
+
+
+                filePath.putFile(fileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
+
+                    {
+                        if((task.isSuccessful()))
+                        {
+
+                            Map messageTextBody = new HashMap();
+                            messageTextBody.put("message", task.getResult().getMetadata().getReference().getDownloadUrl().toString());
+                            messageTextBody.put("type", "text");
+                            messageTextBody.put("from", messageSenderId);
+                            messageTextBody.put("to", msgReceiverId);
+                            messageTextBody.put("messageID", messagePushId);
+                            messageTextBody.put("time", saveCurrentTime);
+                            messageTextBody.put("date", saveCurrentDate);
+
+
+                            Map messageBodyDetails = new HashMap();
+                            messageBodyDetails.put(msgSenderRef + "/" + messagePushId, messageTextBody);
+                            messageBodyDetails.put(msgReceiverRef + "/" + messagePushId, messageTextBody);
+
+
+
+
+
+                        }
+
+
+
+
+                    }
+                });
+
+
+
+
+
+
+
+
+
+            }
+
+
+            else if (checker.equals("image")) {
+
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Files");
 
                 final String msgSenderRef = "Message/" + messageSenderId + "/" + msgReceiverId;
@@ -391,49 +464,7 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-   /* @Override
-    protected void onStart() {
 
-
-        super.onStart();
-
-
-        RootRef.child("Message").child(messageSenderId).child(msgReceiverId).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                Messages messages = dataSnapshot.getValue(Messages.class);
-
-                messagesList.add(messages);
-
-                adapter.notifyDataSetChanged();
-                UserMessagesList.smoothScrollToPosition(UserMessagesList.getAdapter().getItemCount());
-
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-*/
     private void SendMesage() {
         String messageTxt = messageInputText.getText().toString();
         if (TextUtils.isEmpty(messageTxt)) {

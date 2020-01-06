@@ -140,56 +140,53 @@ public class SettingsActivity extends AppCompatActivity {
 
                 Uri resultUri = result.getUri();
 
-                StorageReference filePath = UserProfileImagesRef.child(currentUserId + ".jpg");
-
+                final StorageReference filePath = UserProfileImagesRef.child(currentUserId + ".jpg");
 
 
                 //storing resultUri into Firebase db storage
 
 
                 filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if (task.isSuccessful()) {
 
                             Toast.makeText(SettingsActivity.this, "Profile picture updated successfully...", Toast.LENGTH_SHORT).show();
 
-
-
-                            //giving me issues
-                            String downloadUrl = task.getResult().getMetadata().getReference().getDownloadUrl().toString();
-
-                            //i tried this then.
-                            /*Task<Uri> result = task.getResult().getMetadata().getReference().getDownloadUrl();
-                            result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
-                                public void onSuccess(Uri uri) {
-                                    String download_url = uri.toString();
-                                }
-                            });*/
 
-                            rootRef.child("Users").child(currentUserId).child("image")
-                                    .setValue(downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
+                                public void onComplete(@NonNull Task<Uri> task) {
 
 
-                                        Toast.makeText(SettingsActivity.this, "images in database added successfullly", Toast.LENGTH_SHORT).show();
-                                        loadingBar.dismiss();
-                                    } else {
-
-                                        String message = task.getException().toString();
-                                        Toast.makeText(SettingsActivity.this, "Error:" + message, Toast.LENGTH_SHORT).show();
-                                        loadingBar.dismiss();
+                                    final String downloadUrl = task.getResult().toString();
 
 
-                                    }
+                                    rootRef.child("Users").child(currentUserId).child("image")
+                                            .setValue(downloadUrl).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+
+
+                                                Toast.makeText(SettingsActivity.this, "images in database added successfullly", Toast.LENGTH_SHORT).show();
+                                                loadingBar.dismiss();
+                                            } else {
+
+                                                String message = task.getException().toString();
+                                                Toast.makeText(SettingsActivity.this, "Error:" + message, Toast.LENGTH_SHORT).show();
+                                                loadingBar.dismiss();
+
+
+                                            }
+
+                                        }
+                                    });
+
 
                                 }
                             });
-
-
                         } else {
                             String message = task.getException().toString();
                             Toast.makeText(SettingsActivity.this, "Error:" + message, Toast.LENGTH_SHORT).show();
@@ -201,14 +198,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                     }
                 });
-
-
             }
-
-
         }
-
-
     }
 
     private void updateSettings() {
