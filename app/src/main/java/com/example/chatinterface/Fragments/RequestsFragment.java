@@ -208,7 +208,7 @@ public class RequestsFragment extends Fragment {
 
                         };
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle(requestUserName + "Chat Request");
+                        builder.setTitle(" Chat Request ");
 
                         builder.setItems(options, new DialogInterface.OnClickListener() {
                             @Override
