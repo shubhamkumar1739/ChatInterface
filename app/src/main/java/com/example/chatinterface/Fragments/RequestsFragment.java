@@ -119,7 +119,8 @@ public class RequestsFragment extends Fragment {
                                     String request_type = requestType.getRequest_type();
                                     Log.d(TAG, "Request Type: "+request_type);
                                     // If Request Type Is "Received"...
-                                    if ("received".equals(request_type)) {
+                                    if ("received".equals(request_type))
+                                    {
                                         // ----------------------------------------
                                         // Code To Find Users With Received Requests...
                                         ValueEventListener listener = new ValueEventListener() {
@@ -179,6 +180,7 @@ public class RequestsFragment extends Fragment {
                                         // --------------------------------------------------
                                         break;
                                     }
+
                                 }else {
                                     Log.d(TAG, "Request Type Model Null!");
                                 }

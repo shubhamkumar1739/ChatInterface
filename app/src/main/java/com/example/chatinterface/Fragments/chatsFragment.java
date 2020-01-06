@@ -133,7 +133,7 @@ public class chatsFragment extends Fragment {
                                     Intent chatIntent = new Intent(getContext(), ChatActivity.class);
                                     chatIntent.putExtra("visit_user_id", user_Ids);
                                     chatIntent.putExtra("visit_user_name", retName);
-                                    //chatIntent.putExtra("visit_user_image",ret_Img);
+                                    chatIntent.putExtra("visit_user_image",ret_Img);
 
                                     startActivity(chatIntent);
 

@@ -57,7 +57,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChatActivity extends AppCompatActivity {
 
     private String msgReceiverId, msgReceiverName, messageSenderId;
-    //private String msgReceiverImage;
+    private String msgReceiverImage;
     private TextView userName, userLastSeen;
     private CircleImageView userImage;
     private Toolbar chatToolbar;
@@ -66,6 +66,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private EditText messageInputText;
+
     private FirebaseAuth mAuth;
 
     private DatabaseReference RootRef;
@@ -94,14 +95,13 @@ public class ChatActivity extends AppCompatActivity {
 
         msgReceiverId = getIntent().getExtras().get("visit_user_id").toString();
         msgReceiverName = getIntent().getExtras().get("visit_user_name").toString();
-        //msgReceiverImage = getIntent().get("visit_user_image").toString();
+        msgReceiverImage = getIntent().getExtras().get("visit_user_image").toString();
 
         initialiseControllers();
 
 
         userName.setText(msgReceiverName);
-        //Picasso.get().load(msgReceiverImage).placeholder(R.drawable.profile_image).into(userImage);
-        Picasso.get().load(R.drawable.profile_image).into(userImage); //for now, till the time images are added into firebase
+        Picasso.get().load(msgReceiverImage).placeholder(R.drawable.profile_image).into(userImage);
 
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +111,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         DispalyLastSeen();
+
 
         sendFilesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,7 +157,45 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
+        RootRef.child("Message").child(messageSenderId).child(msgReceiverId).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                Messages messages = dataSnapshot.getValue(Messages.class);
+
+                messagesList.add(messages);
+
+                adapter.notifyDataSetChanged();
+                UserMessagesList.smoothScrollToPosition(UserMessagesList.getAdapter().getItemCount());
+
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
+
+
+
 
     private void initialiseControllers() {
 
@@ -176,9 +215,10 @@ public class ChatActivity extends AppCompatActivity {
         userImage = findViewById(R.id.custom_profile_image);
 
         sendMessageButton = findViewById(R.id.send_message_btn);
-        sendFilesButton = findViewById(R.id.send_files_btn);
+
 
         messageInputText = findViewById(R.id.input_message);
+        sendFilesButton = findViewById(R.id.send_files_btn);
 
         adapter = new MessageAdapter(messagesList);
 
@@ -352,7 +392,7 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    @Override
+   /* @Override
     protected void onStart() {
 
 
@@ -394,7 +434,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-
+*/
     private void SendMesage() {
         String messageTxt = messageInputText.getText().toString();
         if (TextUtils.isEmpty(messageTxt)) {

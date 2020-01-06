@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -135,9 +136,16 @@ public class SettingsActivity extends AppCompatActivity {
                 loadingBar.setCanceledOnTouchOutside(false);
                 loadingBar.show();
 
+                //resultUri contains the cropped image
+
                 Uri resultUri = result.getUri();
 
                 StorageReference filePath = UserProfileImagesRef.child(currentUserId + ".jpg");
+
+
+
+                //storing resultUri into Firebase db storage
+
 
                 filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -151,6 +159,7 @@ public class SettingsActivity extends AppCompatActivity {
                             //giving me issues
                             String downloadUrl = task.getResult().getMetadata().getReference().getDownloadUrl().toString();
 
+                            //i tried this then.
                             /*Task<Uri> result = task.getResult().getMetadata().getReference().getDownloadUrl();
                             result.addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
@@ -252,6 +261,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                     userName.setText(retrieveUsername);
                     userStatus.setText(retrieveStatus);
+                    Log.d("img",retrieveProfileImage);
+
                     Picasso.get().load(retrieveProfileImage).into(userProfileImage);
 
                 }
