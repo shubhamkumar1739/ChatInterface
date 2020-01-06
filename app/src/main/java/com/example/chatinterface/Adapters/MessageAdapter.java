@@ -120,7 +120,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         holder.receiverMessageText.setVisibility(View.GONE);
         holder.receiverProfileImage.setVisibility(View.GONE);
-
         holder.senderMessageText.setVisibility(View.GONE);
         holder.message_sender_picture.setVisibility(View.GONE);
         holder.message_receiver_picture.setVisibility(View.GONE);
