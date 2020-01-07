@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
         userPassword = findViewById(R.id.login_password);
         needNewAccountLink = findViewById(R.id.need_new_account_link);
         forgetPasswordLink = findViewById(R.id.forget_password_link);
-        loadingBar = new ProgressDialog(this);
+        loadingBar = new ProgressDialog(this,R.style.MyAlertDialogStyle);
 
 
     }

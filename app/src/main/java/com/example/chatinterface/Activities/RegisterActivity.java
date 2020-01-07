@@ -124,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
         userEmail=findViewById(R.id.register_email);
         userPassword=findViewById(R.id.register_password);
         alreadyHaveAccountLink=findViewById(R.id.already_have_account_link);
-        loadingBar=new ProgressDialog(RegisterActivity.this);
+        loadingBar=new ProgressDialog(RegisterActivity.this,R.style.MyAlertDialogStyle);
     }
 
     private void sendUserToLoginActivity() {

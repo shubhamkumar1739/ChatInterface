@@ -48,7 +48,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
         inputPhoneNumber=findViewById(R.id.phone_number_input);
         inputVerificationCode=findViewById(R.id.phone_verification);
         mAuth=FirebaseAuth.getInstance();
-        loadingBar=new ProgressDialog(this);
+        loadingBar=new ProgressDialog(this,R.style.MyAlertDialogStyle);
 
         sendVerificationcodeButton.setOnClickListener(new View.OnClickListener() {
             @Override

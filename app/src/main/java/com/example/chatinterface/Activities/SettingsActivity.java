@@ -99,7 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
         userName = findViewById(R.id.set_user_name);
         userStatus = findViewById(R.id.set_profile_status);
         userProfileImage = findViewById(R.id.profile_image);
-        loadingBar = new ProgressDialog(this);
+        loadingBar = new ProgressDialog(this,R.style.MyAlertDialogStyle);
 
         settingToolbar = findViewById(R.id.settings_toolbar);
         setSupportActionBar(settingToolbar);

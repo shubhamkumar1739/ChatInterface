@@ -240,7 +240,7 @@ public class ChatActivity extends AppCompatActivity {
         UserMessagesList.setLayoutManager(linearLayoutManager);
 
         UserMessagesList.setAdapter(adapter);
-        loadingBar = new ProgressDialog(this);
+        loadingBar = new ProgressDialog(this,R.style.MyAlertDialogStyle);
 
 
         Calendar calendar = Calendar.getInstance();

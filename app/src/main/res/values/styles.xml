@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="generalnotitle" parent="Theme.AppCompat.Light" >
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>

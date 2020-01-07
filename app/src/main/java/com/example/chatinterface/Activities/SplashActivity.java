@@ -46,7 +46,7 @@ public class SplashActivity extends AppCompatActivity {
 
     public void loadMainActivity()
     {
-        Intent pintent = new Intent(SplashActivity.this, MainActivity.class);
+        Intent pintent = new Intent(SplashActivity.this, CheckInternetConnectionActivity.class);
         pintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         pintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         pintent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
