@@ -22,8 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import com.example.chatinterface.Adapters.MessageAdapter;
 import com.example.chatinterface.R;
@@ -231,15 +234,24 @@ public class ChatActivity extends AppCompatActivity {
         messageInputText = findViewById(R.id.input_message);
         sendFilesButton = findViewById(R.id.send_files_btn);
 
-        adapter = new MessageAdapter(messagesList);
 
         UserMessagesList = findViewById(R.id.private_messages_list_of_users);
 
+        adapter = new MessageAdapter(messagesList);
+
+
+
         linearLayoutManager = new LinearLayoutManager(this);
 
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getApplicationContext(),linearLayoutManager.getOrientation());
         UserMessagesList.setLayoutManager(linearLayoutManager);
 
+        UserMessagesList.addItemDecoration(dividerItemDecoration);
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(UserMessagesList);
+
         UserMessagesList.setAdapter(adapter);
+
         loadingBar = new ProgressDialog(this,R.style.MyAlertDialogStyle);
 
 
