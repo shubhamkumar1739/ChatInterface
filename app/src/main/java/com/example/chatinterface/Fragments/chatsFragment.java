@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,15 +135,17 @@ public class chatsFragment extends Fragment {
                                 String state = dataSnapshot.child("UserState").child("state").getValue().toString();
                                 String date = dataSnapshot.child("UserState").child("date").getValue().toString();
                                 String time = dataSnapshot.child("UserState").child("time").getValue().toString();
-//
+
                                 try {
+                                    Log.d(TAG, "Last Seen Date: "+date);
                                     long timeInMilliseconds = lastSeenInMilliseconds(time);
-                                    if (timeInMilliseconds != 0){
-                                        Log.d(TAG, "Time In Milliseconds: "+ timeInMilliseconds);
-                                        userLastSeen = getFormattedLastSeen(timeInMilliseconds);
-                                    }else {
-                                        Log.d(TAG, "Time In Milliseconds 0!");
-                                    }
+                                    userLastSeen = lastSeenTime(String.valueOf(timeInMilliseconds));
+//                                    if (timeInMilliseconds != 0){
+//                                        Log.d(TAG, "Time In Milliseconds: "+ timeInMilliseconds);
+//                                        userLastSeen = getFormattedLastSeen(timeInMilliseconds);
+//                                    }else {
+//                                        Log.d(TAG, "Time In Milliseconds 0!");
+//                                    }
 
                                 }catch (Exception e){
                                     Log.d(TAG, "User Last Seen Exception: "+e.toString());
@@ -279,6 +282,12 @@ public class chatsFragment extends Fragment {
             return DateFormat.format("MMMM dd yyyy, h:mm aa", smsTime).toString();
         }
     }
+
+    private String lastSeenTime(String timeInMilliseconds){
+        Calendar now = Calendar.getInstance();
+        return String.valueOf(DateUtils.getRelativeTimeSpanString(Long.parseLong(timeInMilliseconds), now.getTimeInMillis(), DateUtils.DAY_IN_MILLIS));
+    }
+
 
 
 }

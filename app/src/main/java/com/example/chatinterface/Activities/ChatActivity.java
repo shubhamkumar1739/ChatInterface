@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -460,12 +461,13 @@ public class ChatActivity extends AppCompatActivity {
 
                     try {
                         long timeInMilliseconds = lastSeenInMilliseconds(time);
-                        if (timeInMilliseconds != 0){
-                            Log.d(TAG, "Time In Milliseconds: "+ timeInMilliseconds);
-                            userLastSeenString = getFormattedLastSeen(timeInMilliseconds);
-                        }else {
-                            Log.d(TAG, "Time In Milliseconds 0!");
-                        }
+                        userLastSeenString = lastSeenTime(String.valueOf(timeInMilliseconds));
+//                        if (timeInMilliseconds != 0){
+//                            Log.d(TAG, "Time In Milliseconds: "+ timeInMilliseconds);
+//                            userLastSeenString = getFormattedLastSeen(timeInMilliseconds);
+//                        }else {
+//                            Log.d(TAG, "Time In Milliseconds 0!");
+//                        }
 
                     }catch (Exception e){
                         Log.d(TAG, "User Last Seen Exception: "+e.toString());
@@ -601,6 +603,11 @@ public class ChatActivity extends AppCompatActivity {
         } else {
             return DateFormat.format("MMMM dd yyyy, h:mm aa", smsTime).toString();
         }
+    }
+
+    private String lastSeenTime(String timeInMilliseconds){
+        Calendar now = Calendar.getInstance();
+        return String.valueOf(DateUtils.getRelativeTimeSpanString(Long.parseLong(timeInMilliseconds), now.getTimeInMillis(), DateUtils.DAY_IN_MILLIS));
     }
 
 }
