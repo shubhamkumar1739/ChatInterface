@@ -1,6 +1,7 @@
 package com.example.chatinterface.Fragments;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +38,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.security.PrivilegedAction;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -47,6 +55,9 @@ public class chatsFragment extends Fragment {
     private DatabaseReference chatsRef, usersRef;
     private FirebaseAuth mAuth;
     private String CurrentUserId;
+    private final String TAG = "chat_fragment";
+    private long lastSeenInMilliseconds;
+    private String userLastSeen;
 
 
     public chatsFragment() {
@@ -99,6 +110,7 @@ public class chatsFragment extends Fragment {
                 final String user_Ids = getRef(position).getKey();
                 final String[] ret_Img = {"default_image"};
 
+
                 usersRef.child(user_Ids).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -122,16 +134,37 @@ public class chatsFragment extends Fragment {
                                 String state = dataSnapshot.child("UserState").child("state").getValue().toString();
                                 String date = dataSnapshot.child("UserState").child("date").getValue().toString();
                                 String time = dataSnapshot.child("UserState").child("time").getValue().toString();
+//
+                                try {
+                                    long timeInMilliseconds = lastSeenInMilliseconds(time);
+                                    if (timeInMilliseconds != 0){
+                                        Log.d(TAG, "Time In Milliseconds: "+ timeInMilliseconds);
+                                        userLastSeen = getFormattedLastSeen(timeInMilliseconds);
+                                    }else {
+                                        Log.d(TAG, "Time In Milliseconds 0!");
+                                    }
 
+                                }catch (Exception e){
+                                    Log.d(TAG, "User Last Seen Exception: "+e.toString());
+                                }
+
+
+                                Log.d(TAG, "Last Seen Time: "+time);
+//                                String lastSeenString = getFormattedLastSeen();
                                 if (state.equals("online")) {
                                     holder.userStatus.setText("online");
-
-
+                                    Log.d(TAG, "User Online!");
                                 }
 
                                 else if (state.equals("offline")) {
-                                    holder.userStatus.setText(" Last seen: " + date + " " + time);
-
+                                    Log.d(TAG, "User Offline!");
+                                    if (!TextUtils.isEmpty(userLastSeen)){
+                                        holder.userStatus.setText(userLastSeen);
+                                        Log.d(TAG, "User Formatted Last Seen Available!");
+                                    }else {
+                                        holder.userStatus.setText(" Last seen: " + date + " " + time);
+                                        Log.d(TAG, "User Formatted Last Seen Not Available!");
+                                    }
 
                                 }
 
@@ -170,6 +203,7 @@ public class chatsFragment extends Fragment {
                 });
 
 
+
             }
 
 
@@ -188,6 +222,8 @@ public class chatsFragment extends Fragment {
 
     }
 
+
+
     public static class ChatsViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView profileImage;
@@ -203,4 +239,46 @@ public class chatsFragment extends Fragment {
 
         }
     }
+
+    private long lastSeenInMilliseconds(String time){
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa");
+        try {
+            Date date = simpleDateFormat.parse(time);
+            Calendar calendar = Calendar.getInstance();
+            assert date != null;
+            calendar.setTime(date);
+            int hourToSeconds = calendar.get(Calendar.HOUR_OF_DAY) * 60 * 60;
+            int minutesToSeconds = calendar.get(Calendar.MINUTE) * 60;
+
+            int totalSeconds = hourToSeconds + minutesToSeconds ;
+            lastSeenInMilliseconds = new GregorianCalendar().getTimeInMillis()+ totalSeconds *1000;
+            Log.d(TAG, "lastSeenInMilliseconds: "+String.valueOf(lastSeenInMilliseconds));
+        } catch (ParseException e) {
+            Log.d(TAG, "Time Conversion Exception: "+e.toString());
+        }
+        return lastSeenInMilliseconds;
+
+    }
+    private String getFormattedLastSeen(long smsTimeInMilliseconds) {
+        Calendar smsTime = Calendar.getInstance();
+        smsTime.setTimeInMillis(smsTimeInMilliseconds);
+
+        Calendar now = Calendar.getInstance();
+
+        final String timeFormatString = "h:mm aa";
+        final String dateTimeFormatString = "EEEE, MMMM d, h:mm aa";
+        final long HOURS = 60 * 60 * 60;
+        if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE) ) {
+            return "Today " + DateFormat.format(timeFormatString, smsTime);
+        } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1  ){
+            return "Yesterday " + DateFormat.format(timeFormatString, smsTime);
+        } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
+            return DateFormat.format(dateTimeFormatString, smsTime).toString();
+        } else {
+            return DateFormat.format("MMMM dd yyyy, h:mm aa", smsTime).toString();
+        }
+    }
+
+
 }

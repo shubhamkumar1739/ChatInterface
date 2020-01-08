@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,9 +53,12 @@ import com.squareup.picasso.Picasso;
 
 
 import java.net.URI;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +67,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity {
 
+    private final String TAG = "chat_activity";
     private String msgReceiverId, msgReceiverName, messageSenderId;
     private String msgReceiverImage;
     private TextView userName, userLastSeen;
@@ -88,6 +93,9 @@ public class ChatActivity extends AppCompatActivity {
     private StorageTask uploadTask;
     private Uri fileUri;
     private ProgressDialog loadingBar;
+    // Last Seen
+    private long lastSeenInMilliseconds;
+    private String userLastSeenString;
 
 
     @Override
@@ -450,7 +458,18 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
+                    try {
+                        long timeInMilliseconds = lastSeenInMilliseconds(time);
+                        if (timeInMilliseconds != 0){
+                            Log.d(TAG, "Time In Milliseconds: "+ timeInMilliseconds);
+                            userLastSeenString = getFormattedLastSeen(timeInMilliseconds);
+                        }else {
+                            Log.d(TAG, "Time In Milliseconds 0!");
+                        }
 
+                    }catch (Exception e){
+                        Log.d(TAG, "User Last Seen Exception: "+e.toString());
+                    }
 
 
                     if (state.equals("online")) {
@@ -458,7 +477,14 @@ public class ChatActivity extends AppCompatActivity {
 
 
                     } else if (state.equals("offline")) {
-                        userLastSeen.setText(" Last seen: " + date + " " + time);
+                        Log.d(TAG, "User Offline!");
+                        if (!TextUtils.isEmpty(userLastSeenString)){
+                            userLastSeen.setText(userLastSeenString);
+                            Log.d(TAG, "User Formatted Last Seen Available!");
+                        }else {
+                            userLastSeen.setText(" Last seen: " + date + " " + time);
+                            Log.d(TAG, "User Formatted Last Seen Not Available!");
+                        }
 
 
                     }
@@ -535,6 +561,46 @@ public class ChatActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private long lastSeenInMilliseconds(String time){
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa");
+        try {
+            Date date = simpleDateFormat.parse(time);
+            Calendar calendar = Calendar.getInstance();
+            assert date != null;
+            calendar.setTime(date);
+            int hourToSeconds = calendar.get(Calendar.HOUR_OF_DAY) * 60 * 60;
+            int minutesToSeconds = calendar.get(Calendar.MINUTE) * 60;
+
+            int totalSeconds = hourToSeconds + minutesToSeconds ;
+            lastSeenInMilliseconds = new GregorianCalendar().getTimeInMillis()+ totalSeconds *1000;
+            Log.d(TAG, "lastSeenInMilliseconds: "+String.valueOf(lastSeenInMilliseconds));
+        } catch (ParseException e) {
+            Log.d(TAG, "Time Conversion Exception: "+e.toString());
+        }
+        return lastSeenInMilliseconds;
+
+    }
+    private String getFormattedLastSeen(long smsTimeInMilliseconds) {
+        Calendar smsTime = Calendar.getInstance();
+        smsTime.setTimeInMillis(smsTimeInMilliseconds);
+
+        Calendar now = Calendar.getInstance();
+
+        final String timeFormatString = "h:mm aa";
+        final String dateTimeFormatString = "EEEE, MMMM d, h:mm aa";
+        final long HOURS = 60 * 60 * 60;
+        if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE) ) {
+            return "Today " + DateFormat.format(timeFormatString, smsTime);
+        } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1  ){
+            return "Yesterday " + DateFormat.format(timeFormatString, smsTime);
+        } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
+            return DateFormat.format(dateTimeFormatString, smsTime).toString();
+        } else {
+            return DateFormat.format("MMMM dd yyyy, h:mm aa", smsTime).toString();
+        }
     }
 
 }
