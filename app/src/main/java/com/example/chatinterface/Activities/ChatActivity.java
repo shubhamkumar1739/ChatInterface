@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -242,13 +243,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         linearLayoutManager = new LinearLayoutManager(this);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getApplicationContext(),linearLayoutManager.getOrientation());
         UserMessagesList.setLayoutManager(linearLayoutManager);
-
-        UserMessagesList.addItemDecoration(dividerItemDecoration);
-        SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(UserMessagesList);
 
         UserMessagesList.setAdapter(adapter);
 
@@ -443,6 +438,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 if (dataSnapshot.child("UserState").hasChild("state")) {
 
                     String state = dataSnapshot.child("UserState").child("state").getValue().toString();
@@ -451,6 +447,11 @@ public class ChatActivity extends AppCompatActivity {
 
                     String time = dataSnapshot.child("UserState").child("time").getValue().toString();
                     Log.d("time", time);
+
+
+
+
+
 
                     if (state.equals("online")) {
                         userLastSeen.setText("online");
@@ -517,7 +518,7 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()) {
-                        Toast.makeText(ChatActivity.this, "Message sent successfully", Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(ChatActivity.this, "Message sent successfully", Toast.LENGTH_SHORT).show();
 
                     } else {
                         Toast.makeText(ChatActivity.this, "Error", Toast.LENGTH_SHORT).show();

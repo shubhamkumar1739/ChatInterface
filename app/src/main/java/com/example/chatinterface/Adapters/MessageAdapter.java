@@ -37,6 +37,8 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.graphics.Color.BLACK;
+import static android.graphics.Color.green;
+import static android.graphics.Color.parseColor;
 
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
@@ -137,8 +139,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.senderMessageText.setVisibility(View.VISIBLE);
 
                 holder.senderMessageText.setBackgroundResource(R.drawable.sender_msgs_layout);
-                holder.senderMessageText.setTextColor(BLACK);
+                //holder.senderMessageText.setTextColor(BLACK);
                 holder.senderMessageText.setText(messages.getMessage() + "\n\n" + messages.getTime());
+
 
 
             } else {
@@ -149,7 +152,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                 holder.receiverMessageText.setBackgroundResource(R.drawable.receiver_msgs_layout);
                 holder.receiverMessageText.setTextColor(BLACK);
-                holder.receiverMessageText.setText(messages.getMessage() + "\n" + messages.getTime());
+                holder.receiverMessageText.setText(messages.getMessage() + "\n\n" + messages.getTime());
 
 
             }
@@ -184,6 +187,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
 
         }
+
+
+
+
+
+
+
+
 
         //code  for deleting a msg,media or text,doc,pdf
         //sender's part

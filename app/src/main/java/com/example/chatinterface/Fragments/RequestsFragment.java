@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -74,6 +75,11 @@ public class RequestsFragment extends Fragment {
 
         myRequestsList = RequestFragmentView.findViewById(R.id.chat_requests_list);
         myRequestsList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+
+        myRequestsList.addItemDecoration(dividerItemDecoration);
+
 
 
         return RequestFragmentView;
@@ -297,7 +303,7 @@ public class RequestsFragment extends Fragment {
             @NonNull
             @Override
             public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.users_display_layout, viewGroup, false);
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.request_layout, viewGroup, false);
                 return new RequestViewHolder(view);
             }
         };

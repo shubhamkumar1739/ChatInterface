@@ -10,13 +10,17 @@ import androidx.fragment.app.Fragment;
 import com.example.chatinterface.Activities.ChatActivity;
 import com.example.chatinterface.model.Contacts;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.chatinterface.R;
@@ -57,13 +61,22 @@ public class chatsFragment extends Fragment {
         PrivateChatsView = inflater.inflate(R.layout.fragment_chats, container, false);
 
 
+
+
         mAuth = FirebaseAuth.getInstance();
         CurrentUserId = mAuth.getCurrentUser().getUid();
         chatsRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(CurrentUserId);
+
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         private_chat_list = PrivateChatsView.findViewById(R.id.chats_list);
         private_chat_list.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+
+        private_chat_list.addItemDecoration(dividerItemDecoration);
+
+
 
 
         return PrivateChatsView;
@@ -74,6 +87,7 @@ public class chatsFragment extends Fragment {
 
         super.onStart();
 
+        //progressBar.setVisibility(View.VISIBLE);
         FirebaseRecyclerOptions<Contacts> options = new FirebaseRecyclerOptions.Builder<Contacts>()
                 .setQuery(chatsRef, Contacts.class).build();
 
@@ -90,6 +104,7 @@ public class chatsFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             if (dataSnapshot.hasChild("image")) {
+                               // progressBar.setVisibility(View.INVISIBLE);
 
                                 ret_Img[0] = dataSnapshot.child("image").getValue().toString();
                                 Log.d("img",ret_Img[0]);
@@ -104,7 +119,6 @@ public class chatsFragment extends Fragment {
 
 
                             if (dataSnapshot.child("UserState").hasChild("state")) {
-
                                 String state = dataSnapshot.child("UserState").child("state").getValue().toString();
                                 String date = dataSnapshot.child("UserState").child("date").getValue().toString();
                                 String time = dataSnapshot.child("UserState").child("time").getValue().toString();
