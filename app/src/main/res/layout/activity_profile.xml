@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".Activities.ProfileActivity"
-    android:background="#CFCFCF">
+    android:background="#E7E6E6">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -101,8 +101,9 @@
             android:layout_height="wrap_content"
             android:text="About and Status "
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
+            android:textSize="22dp"
+            android:textStyle="bold"
+            android:layout_marginStart="5dp"/>
 
     <!--<TextView
         android:id="@+id/visit_profile_name"
@@ -124,23 +125,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="hey! i am using chatapp"
+        android:layout_marginTop="3dp"
         android:layout_below="@+id/visit_profile_name"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="25dp"
-        android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="25sp"
-        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
 
         />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="15dp"
+            android:background="#DFDFDF" />
 
     <Button
         android:id="@+id/send_message_request_button"
         android:layout_width="match_parent"
         android:layout_below="@id/visit_profile_status"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:layout_marginLeft="65dp"
         android:layout_marginRight="65dp"
         android:textColor="@android:color/background_light"
