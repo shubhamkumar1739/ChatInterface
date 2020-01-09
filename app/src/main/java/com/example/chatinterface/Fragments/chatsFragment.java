@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.chatinterface.Activities.ChatActivity;
+import com.example.chatinterface.Activities.FindFriendsActivity;
+import com.example.chatinterface.Activities.ProfileActivity;
 import com.example.chatinterface.model.Contacts;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -24,6 +27,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -61,6 +68,7 @@ public class chatsFragment extends Fragment {
     private String userLastSeen;
 
 
+
     public chatsFragment() {
         // Required empty public constructor
     }
@@ -71,6 +79,7 @@ public class chatsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         PrivateChatsView = inflater.inflate(R.layout.fragment_chats, container, false);
+
 
 
 
@@ -114,7 +123,7 @@ public class chatsFragment extends Fragment {
 
                 usersRef.child(user_Ids).addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             if (dataSnapshot.hasChild("image")) {
                                // progressBar.setVisibility(View.INVISIBLE);
@@ -179,7 +188,64 @@ public class chatsFragment extends Fragment {
                             }
 
 
-                            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            holder.profileImage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+
+                                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+
+                                    LayoutInflater inflater = getLayoutInflater();
+                                    final View dialogLayout = inflater.inflate(R.layout.custom_dialog_layout, null);
+                                    builder.setView(dialogLayout);
+                                   // FrameLayout frameLayout = dialogLayout.findViewById(R.id.frame_image);
+                                    TextView textView =  dialogLayout.findViewById(R.id.user_name);
+                                    ImageView imageView=  dialogLayout.findViewById(R.id.photo);
+                                    ImageButton message = dialogLayout.findViewById(R.id.message);
+                                    ImageButton info = dialogLayout.findViewById(R.id.info);
+
+                                    textView.setText("  "+retName);
+                                    Picasso.get().load(ret_Img[0]).into(imageView);
+                                    message.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent chatIntent = new Intent(getContext(), ChatActivity.class);
+                                            chatIntent.putExtra("visit_user_id", user_Ids);
+                                            chatIntent.putExtra("visit_user_name", retName);
+                                            chatIntent.putExtra("visit_user_image",ret_Img[0]);
+                                            Log.d("img",ret_Img[0]);
+
+                                            startActivity(chatIntent);
+
+                                        }
+                                    });
+
+                                    info.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                            Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
+                                            profileIntent.putExtra("visit_user_id",user_Ids);
+                                            startActivity(profileIntent);
+
+                                        }
+                                    });
+
+
+
+                                    builder.setCancelable(true);
+
+
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
+                                    dialog.getWindow().setLayout(800,920);
+
+                                }
+                            });
+
+
+                            holder.user_info_layout.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     Intent chatIntent = new Intent(getContext(), ChatActivity.class);
@@ -231,6 +297,7 @@ public class chatsFragment extends Fragment {
 
         CircleImageView profileImage;
         TextView userStatus, userName;
+        LinearLayout user_info_layout;
 
 
         public ChatsViewHolder(@NonNull View itemView) {
@@ -238,6 +305,8 @@ public class chatsFragment extends Fragment {
             profileImage = itemView.findViewById(R.id.users_profile_image);
             userName = itemView.findViewById(R.id.user_profile_name);
             userStatus = itemView.findViewById(R.id.user_status);
+            user_info_layout = itemView.findViewById(R.id.user_info_layout);
+
 
 
         }

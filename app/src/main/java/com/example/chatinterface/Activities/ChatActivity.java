@@ -481,7 +481,7 @@ public class ChatActivity extends AppCompatActivity {
                     } else if (state.equals("offline")) {
                         Log.d(TAG, "User Offline!");
                         if (!TextUtils.isEmpty(userLastSeenString)){
-                            userLastSeen.setText(userLastSeenString);
+                            userLastSeen.setText(" Last seen: " + date + " " + userLastSeenString);
                             Log.d(TAG, "User Formatted Last Seen Available!");
                         }else {
                             userLastSeen.setText(" Last seen: " + date + " " + time);

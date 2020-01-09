@@ -87,7 +87,6 @@ public class ProfileActivity extends AppCompatActivity {
                     String userStatus = dataSnapshot.child("status").getValue().toString();
                     userProfileName.setText(userName);
                     userProfileStatus.setText(userStatus);
-
                     manageChatRequests();
 
 

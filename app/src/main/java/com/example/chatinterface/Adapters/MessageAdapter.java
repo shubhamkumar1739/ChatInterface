@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +70,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             receiverProfileImage = itemView.findViewById(R.id.message_profile_image);
             message_sender_picture = itemView.findViewById(R.id.msg_sender_image_view);
             message_receiver_picture = itemView.findViewById(R.id.msg_receiver_image_view);
+
 
 
         }
@@ -138,8 +140,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                 holder.senderMessageText.setVisibility(View.VISIBLE);
 
+
                 holder.senderMessageText.setBackgroundResource(R.drawable.sender_msgs_layout);
-                //holder.senderMessageText.setTextColor(BLACK);
                 holder.senderMessageText.setText(messages.getMessage() + "\n\n" + messages.getTime());
 
 

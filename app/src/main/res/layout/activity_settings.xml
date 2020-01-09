@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.SettingsActivity">
+    tools:context=".Activities.SettingsActivity"
+    android:background="#ffffff">
 
     <include
         android:id="@+id/settings_toolbar"
@@ -22,7 +23,6 @@
         app:civ_border_color="@color/colorPrimary"
         android:layout_marginTop="100dp"
         />
-
     <EditText
         android:id="@+id/set_user_name"
         android:layout_width="match_parent"
@@ -30,7 +30,6 @@
         android:layout_below="@id/profile_image"
         android:inputType="textImeMultiLine"
         android:hint="username"
-        android:textAlignment="center"
         android:drawableStart="@drawable/edit_profile"
         android:drawableLeft="@drawable/edit_profile"
         android:textColor="@color/colorPrimaryDark"
@@ -42,6 +41,7 @@
         android:layout_marginTop="10dp"
         />
 
+
     <EditText
         android:id="@+id/set_profile_status"
         android:layout_width="match_parent"
@@ -49,7 +49,6 @@
         android:layout_below="@id/set_user_name"
         android:inputType="textImeMultiLine"
         android:hint="hey! I am available"
-        android:textAlignment="center"
         android:drawableStart="@drawable/edit_status"
         android:drawableLeft="@drawable/edit_status"
         android:textColor="@color/colorPrimaryDark"
@@ -58,7 +57,7 @@
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:padding="6dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         />
 
 
@@ -68,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/set_profile_status"
         android:inputType="textImeMultiLine"
-        android:hint="update"
+        android:hint="update status"
         android:textAlignment="center"
         android:textColor="@android:color/background_light"
         android:textStyle="bold"
