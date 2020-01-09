@@ -25,7 +25,8 @@
         <activity
             android:name=".Activities.ChatActivity"
             android:parentActivityName=".Activities.MainActivity" />
-        <activity android:name=".Activities.ProfileActivity" />
+        <activity android:name=".Activities.ProfileActivity"
+            android:theme="@style/AppThemeCheck"/>
         <activity
             android:name=".Activities.FindFriendsActivity"
             android:parentActivityName=".Activities.MainActivity" />

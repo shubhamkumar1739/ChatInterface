@@ -2,17 +2,24 @@ package com.example.chatinterface.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Trace;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatinterface.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +36,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileActivity extends AppCompatActivity {
 
     private String receiverUserId, current_State, senderUserId;
-    private CircleImageView userProfileImage;
+    private ImageView userProfileImage;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private Toolbar toolbar;
+    private AppBarLayout appBarLayout;
+
 
     private TextView userProfileName, userProfileStatus;
     private Button sendMessageRequestButton, declineRequestButton;
@@ -47,6 +58,32 @@ public class ProfileActivity extends AppCompatActivity {
         contactsRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
         notificationRef = FirebaseDatabase.getInstance().getReference().child("Notifications");
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
+
+
+
+
+        getSupportActionBar().setTitle(" ");
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                finish();
+            }
+        });
+
+
+
+        appBarLayout = findViewById(R.id.app_bar);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -67,18 +104,47 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+
+
     private void retrieveUserInfo() {
         userRef.child(receiverUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("image"))) {
-                    String userImage = dataSnapshot.child("image").getValue().toString();
-                    String userName = dataSnapshot.child("name").getValue().toString();
+                    final String userImage = dataSnapshot.child("image").getValue().toString();
+                    final String userName = dataSnapshot.child("name").getValue().toString();
                     String userStatus = dataSnapshot.child("status").getValue().toString();
+
 
                     Picasso.get().load(userImage).placeholder(R.drawable.profile_image).into(userProfileImage);
                     userProfileName.setText(userName);
+                    userProfileName.setShadowLayer(1.6f,1.5f,1.3f, Color.BLACK);
+
                     userProfileStatus.setText(userStatus);
+
+                    appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+
+                        boolean isShow = true;
+                        int scrollRange = -1;
+
+                        @Override
+                        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                            if (scrollRange == -1) {
+                                scrollRange = appBarLayout.getTotalScrollRange();
+                            }
+                            if (scrollRange + verticalOffset == 0) {
+                                collapsingToolbarLayout.setTitle(userName);
+                                isShow = true;
+                            } else if (isShow) {
+                                collapsingToolbarLayout.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+
+                                isShow = false;
+                            }
+
+                        }
+                    });
+
+
 
                     manageChatRequests();
 
@@ -87,6 +153,7 @@ public class ProfileActivity extends AppCompatActivity {
                     String userStatus = dataSnapshot.child("status").getValue().toString();
                     userProfileName.setText(userName);
                     userProfileStatus.setText(userStatus);
+                    Picasso.get().load(R.drawable.profile_image).into(userProfileImage);
                     manageChatRequests();
 
 
