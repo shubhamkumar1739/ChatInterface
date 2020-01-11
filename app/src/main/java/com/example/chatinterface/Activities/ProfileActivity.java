@@ -133,6 +133,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 scrollRange = appBarLayout.getTotalScrollRange();
                             }
                             if (scrollRange + verticalOffset == 0) {
+
                                 collapsingToolbarLayout.setTitle(userName);
                                 isShow = true;
                             } else if (isShow) {

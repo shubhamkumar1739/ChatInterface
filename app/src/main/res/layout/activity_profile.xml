@@ -102,8 +102,8 @@
             android:text="About and Status "
             android:textColor="@color/colorPrimaryDark"
             android:textSize="22dp"
-            android:textStyle="bold"
-            android:layout_marginStart="5dp"/>
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="7dp"/>
 
     <!--<TextView
         android:id="@+id/visit_profile_name"
@@ -125,9 +125,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="hey! i am using chatapp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="4dp"
         android:layout_below="@+id/visit_profile_name"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="7dp"
         android:layout_marginRight="15dp"
         android:textAllCaps="false"
         android:textSize="20sp"
@@ -139,7 +139,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="18dp"
             android:background="#DFDFDF" />
 
     <Button
@@ -148,11 +148,10 @@
         android:layout_below="@id/visit_profile_status"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:layout_marginLeft="65dp"
-        android:layout_marginRight="65dp"
+        android:layout_marginLeft="150dp"
         android:textColor="@android:color/background_light"
         android:textStyle="bold"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:text="Send Message"
         android:background="@drawable/buttons"
         android:textAllCaps="false"
@@ -165,11 +164,10 @@
         android:layout_below="@id/send_message_request_button"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:layout_marginLeft="65dp"
-        android:layout_marginRight="65dp"
+        android:layout_marginLeft="150dp"
         android:textColor="@android:color/background_light"
         android:textStyle="bold"
-        android:textSize="25sp"
+        android:textSize="22sp"
         android:text="Cancel Chat Request"
         android:background="@drawable/buttons"
         android:textAllCaps="false"

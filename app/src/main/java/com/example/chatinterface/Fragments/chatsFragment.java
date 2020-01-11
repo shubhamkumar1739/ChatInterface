@@ -10,15 +10,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.chatinterface.Activities.ChatActivity;
-import com.example.chatinterface.Activities.FindFriendsActivity;
 import com.example.chatinterface.Activities.ProfileActivity;
 import com.example.chatinterface.model.Contacts;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
 
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -27,11 +24,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.chatinterface.R;
@@ -45,7 +40,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.security.PrivilegedAction;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -146,9 +140,10 @@ public class chatsFragment extends Fragment {
                                 String time = dataSnapshot.child("UserState").child("time").getValue().toString();
 
                                 try {
-                                    Log.d(TAG, "Last Seen Date: "+date);
-                                    long timeInMilliseconds = lastSeenInMilliseconds(time);
-                                    userLastSeen = lastSeenTime(String.valueOf(timeInMilliseconds));
+                                    Log.d("Last Seen Date: ", date);
+                                    Log.d( "Last Seen Time", time);
+                                    userLastSeen = getFormattedLastSeen(date,time);
+                                    Log.d("user last seen",userLastSeen);
 //                                    if (timeInMilliseconds != 0){
 //                                        Log.d(TAG, "Time In Milliseconds: "+ timeInMilliseconds);
 //                                        userLastSeen = getFormattedLastSeen(timeInMilliseconds);
@@ -312,50 +307,30 @@ public class chatsFragment extends Fragment {
         }
     }
 
-    private long lastSeenInMilliseconds(String time){
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa");
-        try {
-            Date date = simpleDateFormat.parse(time);
-            Calendar calendar = Calendar.getInstance();
-            assert date != null;
-            calendar.setTime(date);
-            int hourToSeconds = calendar.get(Calendar.HOUR_OF_DAY) * 60 * 60;
-            int minutesToSeconds = calendar.get(Calendar.MINUTE) * 60;
 
-            int totalSeconds = hourToSeconds + minutesToSeconds ;
-            lastSeenInMilliseconds = new GregorianCalendar().getTimeInMillis()+ totalSeconds *1000;
-            Log.d(TAG, "lastSeenInMilliseconds: "+String.valueOf(lastSeenInMilliseconds));
-        } catch (ParseException e) {
-            Log.d(TAG, "Time Conversion Exception: "+e.toString());
-        }
-        return lastSeenInMilliseconds;
+    private String getFormattedLastSeen(String date, String time) throws ParseException {
+        String pattern = "MMM dd, yyyy hh:mm a";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-    }
-    private String getFormattedLastSeen(long smsTimeInMilliseconds) {
-        Calendar smsTime = Calendar.getInstance();
-        smsTime.setTimeInMillis(smsTimeInMilliseconds);
+        String temp = date + " " +time;
 
+        Log.d("temp",temp);
+
+        Date date1 = simpleDateFormat.parse(temp);
         Calendar now = Calendar.getInstance();
-
-        final String timeFormatString = "h:mm aa";
-        final String dateTimeFormatString = "EEEE, MMMM d, h:mm aa";
-        final long HOURS = 60 * 60 * 60;
-        if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE) ) {
-            return "Today " + DateFormat.format(timeFormatString, smsTime);
-        } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1  ){
-            return "Yesterday " + DateFormat.format(timeFormatString, smsTime);
-        } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
-            return DateFormat.format(dateTimeFormatString, smsTime).toString();
+        Date date2 = now.getTime();
+        if(date1.getDate() == date2.getDate()) {
+            return "Today " + DateFormat.format(pattern,date1.getTime());
+        } else if (date1.getDate() - date2.getDate() == 1  ){
+            return "Yesterday " + DateFormat.format(pattern, date1.getTime());
         } else {
-            return DateFormat.format("MMMM dd yyyy, h:mm aa", smsTime).toString();
+            return DateFormat.format(pattern, date1.getDate()).toString();
         }
+
     }
 
-    private String lastSeenTime(String timeInMilliseconds){
-        Calendar now = Calendar.getInstance();
-        return String.valueOf(DateUtils.getRelativeTimeSpanString(Long.parseLong(timeInMilliseconds), now.getTimeInMillis(), DateUtils.DAY_IN_MILLIS));
-    }
+
 
 
 
