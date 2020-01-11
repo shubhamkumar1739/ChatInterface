@@ -318,8 +318,12 @@ public class chatsFragment extends Fragment {
         Log.d("temp",temp);
 
         Date date1 = simpleDateFormat.parse(temp);
+        Log.d("date1", String.valueOf(date1));
         Calendar now = Calendar.getInstance();
         Date date2 = now.getTime();
+        Log.d("date2", String.valueOf(date2));
+
+
         if(date1.getDate() == date2.getDate()) {
             return "Today " + DateFormat.format(pattern,date1.getTime());
         } else if (date1.getDate() - date2.getDate() == 1  ){
