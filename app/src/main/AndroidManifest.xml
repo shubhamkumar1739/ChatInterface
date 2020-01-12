@@ -13,7 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.CheckInternetConnectionActivity" android:theme="@style/generalnotitle"></activity>
+        <activity android:name=".Activities.GroupChatActivity"></activity>
+        <activity
+            android:name=".Activities.CheckInternetConnectionActivity"
+            android:theme="@style/generalnotitle" />
         <activity android:name=".Activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,8 +28,9 @@
         <activity
             android:name=".Activities.ChatActivity"
             android:parentActivityName=".Activities.MainActivity" />
-        <activity android:name=".Activities.ProfileActivity"
-            android:theme="@style/AppThemeCheck"/>
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:theme="@style/AppThemeCheck" />
         <activity
             android:name=".Activities.FindFriendsActivity"
             android:parentActivityName=".Activities.MainActivity" />
@@ -36,7 +40,7 @@
             android:parentActivityName=".Activities.MainActivity" />
         <activity android:name=".Activities.RegisterActivity" />
         <activity android:name=".Activities.LoginActivity" />
-        <activity android:name=".Activities.MainActivity"></activity>
+        <activity android:name=".Activities.MainActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

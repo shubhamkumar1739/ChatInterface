@@ -1,12 +1,20 @@
 package com.example.chatinterface.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -14,6 +22,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.chatinterface.Adapters.TabsAccessorAdapter;
 import com.example.chatinterface.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -120,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if ((dataSnapshot.child("name").exists())) {
-                   // Toast.makeText(MainActivity.this, "welcome", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(MainActivity.this, "welcome", Toast.LENGTH_SHORT).show();
                 } else {
                     sendUserToSettingsActivity();
                 }
@@ -160,6 +170,9 @@ public class MainActivity extends AppCompatActivity {
             mauth.signOut();
             sendUserToLoginActivity();
 
+        } else if (item.getItemId() == R.id.main_create_group_option) {
+            RequestNewGroup();
+
         } else if (item.getItemId() == R.id.main_find_people) {
             sendUserToFindFriendActivity();
 
@@ -169,8 +182,65 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+
         return true;
     }
+
+
+    private void RequestNewGroup() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialog);
+
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.group_custom_dialog_layout, null);
+        builder.setView(dialogView);
+        final EditText GroupNameField = dialogView.findViewById(R.id.grpName);
+        final Button createBtn = dialogView.findViewById(R.id.buttonOk);
+        final Button cancelBtn = dialogView.findViewById(R.id.buttonCancel);
+
+         final AlertDialog dialog = builder.create();
+
+        createBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String grpName = GroupNameField.getText().toString();
+                if (TextUtils.isEmpty(grpName)) {
+                    Toast.makeText(MainActivity.this, "Please type a Group Name", Toast.LENGTH_SHORT).show();
+                } else {
+                    dialog.dismiss();
+                    createNewGroup(grpName);
+                }
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                //do nothing
+            }
+        });
+
+        builder.setCancelable(true);
+        dialog.show();
+    }
+
+    private void createNewGroup(final String grpName) {
+        rootRef.child("Groups").child(grpName).setValue("")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, grpName + "is created successfully!", Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                    }
+                });
+
+
+    }
+
 
     private void sendUserToLoginActivity() {
         Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
