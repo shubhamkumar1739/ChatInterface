@@ -1,20 +1,34 @@
 package com.example.chatinterface.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -33,15 +47,28 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     private Toolbar mtoolbar;
     private ViewPager myViewpager;
     private TabLayout myTabLayout;
     private TabsAccessorAdapter myTabAccessorAdapter;
+    private static final int CAMERA_REQUEST = 1888, GALLERY=1;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    private CircleImageView group_photo;
+    private static final String IMAGE_DIRECTORY = "/YourDirectName";
+
+
+
 
 
     private FirebaseAuth mauth;
@@ -196,8 +223,24 @@ public class MainActivity extends AppCompatActivity {
         final EditText GroupNameField = dialogView.findViewById(R.id.grpName);
         final Button createBtn = dialogView.findViewById(R.id.buttonOk);
         final Button cancelBtn = dialogView.findViewById(R.id.buttonCancel);
+        group_photo  = dialogView.findViewById(R.id.group_image);
+        final ImageView camera = dialogView.findViewById(R.id.camera);
+
 
          final AlertDialog dialog = builder.create();
+
+
+         group_photo.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 showPictureDialog();
+
+             }
+
+         });
+
+
+
 
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,6 +265,55 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setCancelable(true);
         dialog.show();
+    }
+
+    private void showPictureDialog() {
+
+            AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+            pictureDialog.setTitle("Select Action");
+            String[] pictureDialogItems = {"Select photo from gallery", "Capture photo from camera"};
+            pictureDialog.setItems(pictureDialogItems,
+                    new DialogInterface.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.M)
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    choosePhotoFromGallary();
+                                    break;
+                                case 1:
+                                    takePhotoFromCamera();
+                                    break;
+                            }
+                        }
+                    });
+            pictureDialog.show();
+
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void takePhotoFromCamera() {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+            }
+            else
+            {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            }
+        }
+
+
+
+
+
+
+    private void choosePhotoFromGallary() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, GALLERY);
+
     }
 
     private void createNewGroup(final String grpName) {
@@ -281,4 +373,82 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_PERMISSION_CODE)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            }
+            else
+            {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            group_photo.setImageBitmap(photo);
+        }
+        else if(requestCode == GALLERY  && resultCode == Activity.RESULT_OK){
+            if(data!=null){
+                Uri contentURI = data.getData();
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
+                    String path = saveImage(bitmap);
+                    Toast.makeText(getApplicationContext(), "Image Saved!", Toast.LENGTH_SHORT).show();
+                    group_photo.setImageBitmap(bitmap);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
+
+            }
+
+
+        }
+
+    private String saveImage(Bitmap myBitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        File wallpaperDirectory = new File(Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
+        if (!wallpaperDirectory.exists()) {  // have the object build the directory structure, if needed.
+            wallpaperDirectory.mkdirs();
+        }
+
+        try {
+            File f = new File(wallpaperDirectory, Calendar.getInstance().getTimeInMillis() + ".jpg");
+            f.createNewFile();
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bytes.toByteArray());
+            MediaScannerConnection.scanFile(this,
+                    new String[]{f.getPath()},
+                    new String[]{"image/jpeg"}, null);
+            fo.close();
+            Log.d("TAG", "File Saved::---&gt;" + f.getAbsolutePath());
+
+            return f.getAbsolutePath();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return "";
+
+
+    }
+
 }

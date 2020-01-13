@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -19,9 +20,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="300dp"
         android:orientation="vertical"
         android:padding="16dp">
+
 
         <TextView
             android:layout_width="match_parent"
@@ -29,6 +31,35 @@
             android:text="Create Group"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        <FrameLayout
+            android:id="@+id/image_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/group_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/profile_image"
+            app:civ_border_color="#D3D1D1"
+            app:civ_border_width="2dp"
+
+
+            />
+
+            <ImageView
+                android:id="@+id/camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cameraa"
+                android:layout_marginTop="50dp"
+                android:layout_marginStart="60dp"
+                android:visibility="visible"
+                />
+
+        </FrameLayout>
 
         <EditText
             android:id="@+id/grpName"
