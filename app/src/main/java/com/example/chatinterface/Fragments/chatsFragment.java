@@ -10,9 +10,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.chatinterface.Activities.ChatActivity;
+import com.example.chatinterface.Activities.ContactsActivity;
 import com.example.chatinterface.Activities.ProfileActivity;
 import com.example.chatinterface.model.Contacts;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +35,7 @@ import android.widget.TextView;
 import com.example.chatinterface.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,7 +64,7 @@ public class chatsFragment extends Fragment {
     private final String TAG = "chat_fragment";
     private long lastSeenInMilliseconds;
     private String userLastSeen;
-
+    private FloatingActionButton fab;
 
 
     public chatsFragment() {
@@ -75,9 +79,6 @@ public class chatsFragment extends Fragment {
         PrivateChatsView = inflater.inflate(R.layout.fragment_chats, container, false);
 
 
-
-
-
         mAuth = FirebaseAuth.getInstance();
         CurrentUserId = mAuth.getCurrentUser().getUid();
         chatsRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(CurrentUserId);
@@ -87,11 +88,20 @@ public class chatsFragment extends Fragment {
         private_chat_list = PrivateChatsView.findViewById(R.id.chats_list);
         private_chat_list.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
 
         private_chat_list.addItemDecoration(dividerItemDecoration);
 
+        fab = PrivateChatsView.findViewById(R.id.fab);
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ContactsIntent = new Intent(getContext(), ContactsActivity.class);
+                startActivity(ContactsIntent);
+
+            }
+        });
 
 
         return PrivateChatsView;
@@ -120,10 +130,10 @@ public class chatsFragment extends Fragment {
                     public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             if (dataSnapshot.hasChild("image")) {
-                               // progressBar.setVisibility(View.INVISIBLE);
+                                // progressBar.setVisibility(View.INVISIBLE);
 
                                 ret_Img[0] = dataSnapshot.child("image").getValue().toString();
-                                Log.d("img",ret_Img[0]);
+                                Log.d("img", ret_Img[0]);
                                 Picasso.get().load(ret_Img[0]).into(holder.profileImage);
 
 
@@ -141,9 +151,9 @@ public class chatsFragment extends Fragment {
 
                                 try {
                                     Log.d("Last Seen Date: ", date);
-                                    Log.d( "Last Seen Time", time);
-                                    userLastSeen = getFormattedLastSeen(date,time);
-                                    Log.d("user last seen",userLastSeen);
+                                    Log.d("Last Seen Time", time);
+                                    userLastSeen = getFormattedLastSeen(date, time);
+                                    Log.d("user last seen", userLastSeen);
 //                                    if (timeInMilliseconds != 0){
 //                                        Log.d(TAG, "Time In Milliseconds: "+ timeInMilliseconds);
 //                                        userLastSeen = getFormattedLastSeen(timeInMilliseconds);
@@ -151,24 +161,22 @@ public class chatsFragment extends Fragment {
 //                                        Log.d(TAG, "Time In Milliseconds 0!");
 //                                    }
 
-                                }catch (Exception e){
-                                    Log.d(TAG, "User Last Seen Exception: "+e.toString());
+                                } catch (Exception e) {
+                                    Log.d(TAG, "User Last Seen Exception: " + e.toString());
                                 }
 
 
-                                Log.d(TAG, "Last Seen Time: "+time);
+                                Log.d(TAG, "Last Seen Time: " + time);
 //                                String lastSeenString = getFormattedLastSeen();
                                 if (state.equals("online")) {
                                     holder.userStatus.setText("online");
                                     Log.d(TAG, "User Online!");
-                                }
-
-                                else if (state.equals("offline")) {
+                                } else if (state.equals("offline")) {
                                     Log.d(TAG, "User Offline!");
-                                    if (!TextUtils.isEmpty(userLastSeen)){
+                                    if (!TextUtils.isEmpty(userLastSeen)) {
                                         holder.userStatus.setText(userLastSeen);
                                         Log.d(TAG, "User Formatted Last Seen Available!");
-                                    }else {
+                                    } else {
                                         holder.userStatus.setText(" Last seen: " + date + " " + time);
                                         Log.d(TAG, "User Formatted Last Seen Not Available!");
                                     }
@@ -194,13 +202,13 @@ public class chatsFragment extends Fragment {
                                     LayoutInflater inflater = getLayoutInflater();
                                     final View dialogLayout = inflater.inflate(R.layout.custom_dialog_layout, null);
                                     builder.setView(dialogLayout);
-                                   // FrameLayout frameLayout = dialogLayout.findViewById(R.id.frame_image);
-                                    TextView textView =  dialogLayout.findViewById(R.id.user_name);
-                                    ImageView imageView=  dialogLayout.findViewById(R.id.photo);
+                                    // FrameLayout frameLayout = dialogLayout.findViewById(R.id.frame_image);
+                                    TextView textView = dialogLayout.findViewById(R.id.user_name);
+                                    ImageView imageView = dialogLayout.findViewById(R.id.photo);
                                     ImageButton message = dialogLayout.findViewById(R.id.message);
                                     ImageButton info = dialogLayout.findViewById(R.id.info);
 
-                                    textView.setText("  "+retName);
+                                    textView.setText("  " + retName);
                                     Picasso.get().load(ret_Img[0]).into(imageView);
                                     message.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -208,8 +216,8 @@ public class chatsFragment extends Fragment {
                                             Intent chatIntent = new Intent(getContext(), ChatActivity.class);
                                             chatIntent.putExtra("visit_user_id", user_Ids);
                                             chatIntent.putExtra("visit_user_name", retName);
-                                            chatIntent.putExtra("visit_user_image",ret_Img[0]);
-                                            Log.d("img",ret_Img[0]);
+                                            chatIntent.putExtra("visit_user_image", ret_Img[0]);
+                                            Log.d("img", ret_Img[0]);
 
                                             startActivity(chatIntent);
 
@@ -221,12 +229,11 @@ public class chatsFragment extends Fragment {
                                         public void onClick(View view) {
 
                                             Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
-                                            profileIntent.putExtra("visit_user_id",user_Ids);
+                                            profileIntent.putExtra("visit_user_id", user_Ids);
                                             startActivity(profileIntent);
 
                                         }
                                     });
-
 
 
                                     builder.setCancelable(true);
@@ -234,7 +241,7 @@ public class chatsFragment extends Fragment {
 
                                     AlertDialog dialog = builder.create();
                                     dialog.show();
-                                    dialog.getWindow().setLayout(800,920);
+                                    dialog.getWindow().setLayout(800, 920);
 
                                 }
                             });
@@ -246,8 +253,8 @@ public class chatsFragment extends Fragment {
                                     Intent chatIntent = new Intent(getContext(), ChatActivity.class);
                                     chatIntent.putExtra("visit_user_id", user_Ids);
                                     chatIntent.putExtra("visit_user_name", retName);
-                                    chatIntent.putExtra("visit_user_image",ret_Img[0]);
-                                    Log.d("img",ret_Img[0]);
+                                    chatIntent.putExtra("visit_user_image", ret_Img[0]);
+                                    Log.d("img", ret_Img[0]);
 
                                     startActivity(chatIntent);
 
@@ -265,7 +272,6 @@ public class chatsFragment extends Fragment {
 
                     }
                 });
-
 
 
             }
@@ -287,7 +293,6 @@ public class chatsFragment extends Fragment {
     }
 
 
-
     public static class ChatsViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView profileImage;
@@ -303,19 +308,17 @@ public class chatsFragment extends Fragment {
             user_info_layout = itemView.findViewById(R.id.user_info_layout);
 
 
-
         }
     }
-
 
 
     private String getFormattedLastSeen(String date, String time) throws ParseException {
         String pattern = "MMM dd, yyyy hh:mm a";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-        String temp = date + " " +time;
+        String temp = date + " " + time;
 
-        Log.d("temp",temp);
+        Log.d("temp", temp);
 
         Date date1 = simpleDateFormat.parse(temp);
         Log.d("date1", String.valueOf(date1));
@@ -324,18 +327,15 @@ public class chatsFragment extends Fragment {
         Log.d("date2", String.valueOf(date2));
 
 
-        if(date1.getDate() == date2.getDate()) {
-            return "Today " + DateFormat.format(pattern,date1.getTime());
-        } else if (date1.getDate() - date2.getDate() == 1  ){
+        if (date1.getDate() == date2.getDate()) {
+            return "Today " + DateFormat.format(pattern, date1.getTime());
+        } else if (date1.getDate() - date2.getDate() == 1) {
             return "Yesterday " + DateFormat.format(pattern, date1.getTime());
         } else {
             return DateFormat.format(pattern, date1.getDate()).toString();
         }
 
     }
-
-
-
 
 
 }

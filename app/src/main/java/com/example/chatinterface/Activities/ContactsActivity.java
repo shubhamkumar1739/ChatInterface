@@ -1,28 +1,21 @@
-package com.example.chatinterface.Fragments;
-
-
-import android.os.Bundle;
+package com.example.chatinterface.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
-import androidx.viewpager.widget.ViewPager;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.chatinterface.R;
+import com.example.chatinterface.model.Contacts;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.example.chatinterface.model.Contacts;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,47 +26,36 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
-public class ContactsFragment extends Fragment {
-
-    private View contacts_view;
+public class ContactsActivity extends AppCompatActivity {
     private RecyclerView myContactList;
-    private DatabaseReference contactsref,usersRef;
+    private DatabaseReference contactsref, usersRef;
     private FirebaseAuth mAuth;
     private String currentUserId;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_contacts);
+        myContactList = findViewById(R.id.contacts_list);
+        myContactList.setLayoutManager(new LinearLayoutManager(ContactsActivity.this));
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getCurrentUser().getUid();
+        contactsref = FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserId);
+        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
 
-    public ContactsFragment() {
-        // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        contacts_view =  inflater.inflate(R.layout.fragment_contacts, container, false);
-
-        myContactList=contacts_view.findViewById(R.id.contacts_list);
-        myContactList.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        mAuth=FirebaseAuth.getInstance();
-        currentUserId=mAuth.getCurrentUser().getUid();
-        contactsref= FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserId);
-        usersRef=FirebaseDatabase.getInstance().getReference().child("Users");
-
-
-        return contacts_view;
-    }
-
-
-    @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
-        FirebaseRecyclerOptions options= new FirebaseRecyclerOptions.Builder<Contacts>().setQuery(contactsref,Contacts.class).build();
 
-        FirebaseRecyclerAdapter<Contacts,ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, ContactsViewHolder>(options) {
+        FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Contacts>().setQuery(contactsref, Contacts.class).build();
+        FirebaseRecyclerAdapter<Contacts, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, ContactsViewHolder>(options) {
+
+
+            @NonNull
             @Override
             protected void onBindViewHolder(@NonNull final ContactsViewHolder holder, int position, @NonNull Contacts model) {
 
@@ -144,26 +126,21 @@ public class ContactsFragment extends Fragment {
 
                     }
                 });
+
             }
 
-            @NonNull
+
             @Override
             public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.users_display_layout,viewGroup,false);
-                ContactsViewHolder viewHolder=new ContactsViewHolder(view);
+                View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.users_display_layout,viewGroup,false);
+                ContactsViewHolder viewHolder= new ContactsViewHolder(view);
                 return viewHolder;
-
             }
-        };
 
+
+        };
         myContactList.setAdapter(adapter);
         adapter.startListening();
-
-
-
-
-
-
 
     }
 
@@ -182,8 +159,4 @@ public class ContactsFragment extends Fragment {
 
         }
     }
-
-
-
-
 }

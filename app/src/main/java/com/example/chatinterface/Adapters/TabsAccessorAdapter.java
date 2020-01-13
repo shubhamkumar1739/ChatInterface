@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.chatinterface.Fragments.ContactsFragment;
 import com.example.chatinterface.Fragments.GroupsFragment;
 import com.example.chatinterface.Fragments.RequestsFragment;
 import com.example.chatinterface.Fragments.chatsFragment;
@@ -22,27 +21,25 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
 
-        switch (i){
+        switch (i) {
 
             case 0:
-                chatsFragment chatsFragment= new chatsFragment();
+                chatsFragment chatsFragment = new chatsFragment();
                 return chatsFragment;
 
 
-                case 1:
-                GroupsFragment groupsFragment= new GroupsFragment();
+            case 1:
+                GroupsFragment groupsFragment = new GroupsFragment();
                 return groupsFragment;
 
-           case 2:
-                ContactsFragment contactsFragment= new ContactsFragment();
-                return contactsFragment;
-            case 3:
-                RequestsFragment requestsFragment=new RequestsFragment();
+
+            case 2:
+                RequestsFragment requestsFragment = new RequestsFragment();
                 return requestsFragment;
 
 
-                default:
-                    return null;
+            default:
+                return null;
 
 
         }
@@ -51,14 +48,14 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 3;
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
 
-        switch (position){
+        switch (position) {
 
             case 0:
                 return "chats";
@@ -67,9 +64,6 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
                 return "Groups";
 
             case 2:
-                return "Contacts";
-
-            case 3:
                 return "Requests";
 
             default:

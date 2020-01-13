@@ -6,20 +6,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -38,6 +34,7 @@ import com.example.chatinterface.Adapters.TabsAccessorAdapter;
 import com.example.chatinterface.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -96,7 +93,11 @@ public class MainActivity extends AppCompatActivity {
         rootRef = FirebaseDatabase.getInstance().getReference();
 
 
+
+
     }
+
+
 
 
     @Override
@@ -224,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
         final Button createBtn = dialogView.findViewById(R.id.buttonOk);
         final Button cancelBtn = dialogView.findViewById(R.id.buttonCancel);
         group_photo  = dialogView.findViewById(R.id.group_image);
-        final ImageView camera = dialogView.findViewById(R.id.camera);
 
 
          final AlertDialog dialog = builder.create();

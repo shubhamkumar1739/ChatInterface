@@ -6,21 +6,17 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Trace;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.chatinterface.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,7 +27,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -61,14 +56,12 @@ public class ProfileActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//this line shows back button
+        //this line shows back button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
-
-
 
 
         getSupportActionBar().setTitle(" ");
@@ -107,7 +100,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-
     private void retrieveUserInfo() {
         userRef.child(receiverUserId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -120,7 +112,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     Picasso.get().load(userImage).placeholder(R.drawable.profile_image).into(userProfileImage);
                     userProfileName.setText(userName);
-                    userProfileName.setShadowLayer(1.6f,1.5f,1.3f, Color.BLACK);
+                    userProfileName.setShadowLayer(1.6f, 1.5f, 1.3f, Color.BLACK);
 
                     userProfileStatus.setText(userStatus);
 
@@ -146,7 +138,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
                     });
-
 
 
                     manageChatRequests();
