@@ -5,9 +5,23 @@
     tools:context=".Activities.ContactsActivity">
 
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <include android:id="@+id/contact_page_toolbar"
+        layout="@layout/appbar_layout"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/contacts_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBarLayout"
+        android:layout_marginTop="5dp"/>
 </RelativeLayout>
