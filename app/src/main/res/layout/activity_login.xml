@@ -19,10 +19,11 @@
             android:layout_width="350dp"
             android:layout_height="480dp"
             android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="50dp"
             android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
             android:elevation="5dp"
-            android:foregroundGravity="center"
             app:cardCornerRadius="10dp">
 
             <LinearLayout
