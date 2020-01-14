@@ -3,23 +3,31 @@ package com.example.chatinterface.Activities;
 import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.animation.Animator;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.LightingColorFilter;
+import android.graphics.drawable.Icon;
 import android.media.tv.TvContract;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.LoginFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatinterface.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,14 +35,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import static android.view.View.VISIBLE;
+
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mauth;
     private ProgressDialog loadingBar;
-
-    private Button loginButton, phoneLoginButton;
+    private Button  phoneLoginButton;
     private EditText userPassword, userEmail;
-    private TextView needNewAccountLink, forgetPasswordLink;
+    private TextView  forgetPasswordLink;
+    private Button needNewAccountLink;
+    private FloatingActionButton loginButton;
+
 
 
     private DatabaseReference UsersRef;
@@ -75,7 +87,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
+
+
+
+
 
     private void AllowUserToLogin() {
         String email = userEmail.getText().toString();
@@ -145,6 +163,7 @@ public class LoginActivity extends AppCompatActivity {
         needNewAccountLink = findViewById(R.id.need_new_account_link);
         forgetPasswordLink = findViewById(R.id.forget_password_link);
         loadingBar = new ProgressDialog(this,R.style.MyAlertDialogStyle);
+
 
 
     }

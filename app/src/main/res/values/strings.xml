@@ -9,4 +9,6 @@
     <string name="accept">Accept</string>
     <string name="user_name">User Name</string>
     <string name="user_status">User Status</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
 </resources>
