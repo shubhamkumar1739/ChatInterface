@@ -5,31 +5,28 @@
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg1"
+    android:background="@drawable/bgimagelogin"
     tools:context=".Activities.LoginActivity">
 
 
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
 
         <androidx.cardview.widget.CardView
-            android:layout_width="350dp"
-            android:layout_height="520dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginRight="30dp"
+            android:id="@+id/card"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:elevation="10dp"
             app:cardCornerRadius="10dp">
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin">
@@ -40,7 +37,6 @@
                     android:layout_width="@dimen/logo_w_h"
                     android:layout_height="@dimen/logo_w_h"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="30dp"
                     android:src="@drawable/puchotech" />
 
 
@@ -50,6 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/login_image"
                     android:layout_centerInParent="true"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:text="LOGIN"
                     android:textColor="#152525"
@@ -79,8 +76,7 @@
                         android:inputType="textEmailAddress"
                         android:padding="4dp"
                         android:textColor="@android:color/black"
-                        android:textColorHint="@android:color/black"
-                        />
+                        android:textColorHint="@android:color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -91,142 +87,103 @@
                     android:orientation="vertical">
 
 
-                <EditText
-                    android:id="@+id/login_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/login_email"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="17dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="17dp"
-                    android:layout_marginBottom="10dp"
-                    android:backgroundTint="@color/Accent"
-                    android:drawableEnd="@drawable/password"
-                    android:hint="@string/hint_password"
-                    android:inputType="textPassword"
-                    android:padding="4dp"
-                    android:textColor="@android:color/black"
-                    android:textColorHint="@android:color/black"
-                    />
+                    <EditText
+                        android:id="@+id/login_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/login_email"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="17dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="17dp"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="@color/Accent"
+                        android:drawableEnd="@drawable/password"
+                        android:hint="@string/hint_password"
+                        android:inputType="textPassword"
+                        android:padding="4dp"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@android:color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
 
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/login_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="85dp"
+                    android:layout_below="@+id/frame"
+                    android:layout_gravity="bottom|center"
+                    android:layout_marginTop="40dp"
+                    android:clickable="true"
+                    android:src="@drawable/check"
+                    app:elevation="6dp"
+                    app:fabCustomSize="70dp"
+                    app:maxImageSize="70dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <LinearLayout
+                        android:id="@+id/phone_login_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:clickable="true">
+
+
+                    <Button
+                        android:id="@+id/phone_login_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:text="Login using"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="#222222"
+                        android:textSize="16sp"
+                        android:layout_marginTop="6dp"
+                        android:textAllCaps="false"
+                        />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/smartp"
+                            android:layout_marginTop="6dp"
+                            android:layout_gravity="center"/>
+
+                    </LinearLayout>
+
+
+                    <Button
+                        android:id="@+id/need_new_account_link"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:text="Not a member? SIGN UP!"
+                        android:textAlignment="center"
+                        android:textColor="#222222"
+                        android:textSize="16sp"
+                        android:layout_gravity="center_horizontal"
+                        android:textAllCaps="false"/>
+
+
+
+
+                </LinearLayout>
+
+
             </LinearLayout>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/login_button"
-                android:layout_width="wrap_content"
-                android:layout_height="85dp"
-                android:layout_gravity="bottom|center"
-                android:layout_marginTop="60dp"
-                android:clickable="true"
-                android:src="@drawable/check"
-                app:elevation="6dp"
-                app:fabCustomSize="70dp"
-                app:maxImageSize="70dp"
-                android:layout_below="@+id/frame"/>
-
 
         </androidx.cardview.widget.CardView>
 
 
-
     </FrameLayout>
-
-
-    <LinearLayout
-        android:id="@+id/ll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/frame"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginStart="35dp"
-        android:layout_marginEnd="35dp">
-
-        <TextView
-            android:id="@+id/login_using"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Login Using"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:shadowColor="@color/text_shadow"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2"
-            android:layout_marginTop="15dp"/>
-
-
-        <Button
-            android:id="@+id/phone_login_button"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:drawableEnd="@drawable/smartp"
-            android:padding="4dp"
-            android:textColor="@android:color/background_light"
-            android:textSize="14sp"
-            android:layout_marginTop="15dp"/>
-
-
-
-        <TextView
-            android:id="@+id/forget_password_link"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ll"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:gravity="end"
-            android:text="Forgot Password?"
-            android:layout_marginStart="30dp"
-            android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:shadowColor="@color/text_shadow"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2"
-            />
-
-
-
-    </LinearLayout>
-
-
-
-    <Button
-        android:id="@+id/need_new_account_link"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/ll"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="23dp"
-        android:background="@color/Accent"
-        android:gravity="center"
-        android:text="Not a member? SIGN UP"
-        android:textAlignment="center"
-        android:textColor="#ffffff"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        android:shadowColor="@color/text_shadow"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="2"
-        />
-
-
 
 </RelativeLayout>

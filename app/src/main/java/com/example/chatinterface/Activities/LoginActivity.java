@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,9 +44,9 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressDialog loadingBar;
     private Button  phoneLoginButton;
     private EditText userPassword, userEmail;
-    private TextView  forgetPasswordLink;
     private Button needNewAccountLink;
     private FloatingActionButton loginButton;
+    private LinearLayout phone_login_layout;
 
 
 
@@ -79,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        phoneLoginButton.setOnClickListener(new View.OnClickListener() {
+        phone_login_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent phoneloginIntent = new Intent(LoginActivity.this, PhoneLoginActivity.class);
@@ -161,8 +162,8 @@ public class LoginActivity extends AppCompatActivity {
         userEmail = findViewById(R.id.login_email);
         userPassword = findViewById(R.id.login_password);
         needNewAccountLink = findViewById(R.id.need_new_account_link);
-        forgetPasswordLink = findViewById(R.id.forget_password_link);
         loadingBar = new ProgressDialog(this,R.style.MyAlertDialogStyle);
+        phone_login_layout = findViewById(R.id.phone_login_layout);
 
 
 
