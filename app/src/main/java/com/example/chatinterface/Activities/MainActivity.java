@@ -34,7 +34,6 @@ import com.example.chatinterface.Adapters.TabsAccessorAdapter;
 import com.example.chatinterface.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,6 +47,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -59,13 +59,11 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager myViewpager;
     private TabLayout myTabLayout;
     private TabsAccessorAdapter myTabAccessorAdapter;
-    private static final int CAMERA_REQUEST = 1888, GALLERY=1;
+    private static final int CAMERA_REQUEST = 1888, GALLERY = 1;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private CircleImageView group_photo;
     private static final String IMAGE_DIRECTORY = "/YourDirectName";
-
-
-
+    Uri outputFileUri;
 
 
     private FirebaseAuth mauth;
@@ -92,12 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         rootRef = FirebaseDatabase.getInstance().getReference();
 
-
-
-
     }
-
-
 
 
     @Override
@@ -126,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         FirebaseUser currentUser = mauth.getCurrentUser();
-
         if (currentUser != null) {
             UpdateUserStatus("offline");
 
@@ -170,8 +162,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
 
@@ -224,28 +214,29 @@ public class MainActivity extends AppCompatActivity {
         final EditText GroupNameField = dialogView.findViewById(R.id.grpName);
         final Button createBtn = dialogView.findViewById(R.id.buttonOk);
         final Button cancelBtn = dialogView.findViewById(R.id.buttonCancel);
-        group_photo  = dialogView.findViewById(R.id.group_image);
+        group_photo = dialogView.findViewById(R.id.group_image);
 
 
-         final AlertDialog dialog = builder.create();
 
 
-         group_photo.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 showPictureDialog();
-
-             }
-
-         });
+        final AlertDialog dialog = builder.create();
 
 
+        group_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPictureDialog();
+
+            }
+
+        });
 
 
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String grpName = GroupNameField.getText().toString();
+
                 if (TextUtils.isEmpty(grpName)) {
                     Toast.makeText(MainActivity.this, "Please type a Group Name", Toast.LENGTH_SHORT).show();
                 } else {
@@ -269,45 +260,38 @@ public class MainActivity extends AppCompatActivity {
 
     private void showPictureDialog() {
 
-            AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
-            pictureDialog.setTitle("Select Action");
-            String[] pictureDialogItems = {"Select photo from gallery", "Capture photo from camera"};
-            pictureDialog.setItems(pictureDialogItems,
-                    new DialogInterface.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.M)
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case 0:
-                                    choosePhotoFromGallary();
-                                    break;
-                                case 1:
-                                    takePhotoFromCamera();
-                                    break;
-                            }
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {"Select photo from gallery", "Capture photo from camera"};
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                choosePhotoFromGallary();
+                                break;
+                            case 1:
+                                takePhotoFromCamera();
+                                break;
                         }
-                    });
-            pictureDialog.show();
+                    }
+                });
+        pictureDialog.show();
 
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void takePhotoFromCamera() {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-            }
-            else
-            {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
-            }
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+        } else {
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, CAMERA_REQUEST);
         }
-
-
-
-
+    }
 
 
     private void choosePhotoFromGallary() {
@@ -324,11 +308,24 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(MainActivity.this, grpName + "is created successfully!", Toast.LENGTH_SHORT).show();
 
+
                         }
 
 
                     }
                 });
+
+        rootRef.child("Groups").child(grpName).child("group_photo").setValue(group_photo).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+
+                }
+                else{
+
+                }
+            }
+        });
 
 
     }
@@ -376,19 +373,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_PERMISSION_CODE)
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
+        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
-            }
-            else
-            {
+            } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
@@ -399,10 +391,12 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+           // outputFileUri = getCaptureImageOutputUri();
             group_photo.setImageBitmap(photo);
-        }
-        else if(requestCode == GALLERY  && resultCode == Activity.RESULT_OK){
-            if(data!=null){
+
+        } else if (requestCode == GALLERY && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
                 Uri contentURI = data.getData();
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
@@ -417,11 +411,20 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-
-            }
-
-
         }
+
+
+    }
+
+   /* private Uri getCaptureImageOutputUri() {
+        Uri outputFileUri = null;
+        File getImage = getExternalCacheDir();
+        if (getImage != null) {
+            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "profile.png"));
+        }
+        return outputFileUri;
+    }*/
+
 
     private String saveImage(Bitmap myBitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

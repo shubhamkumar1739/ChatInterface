@@ -14,15 +14,13 @@ import com.example.chatinterface.Activities.ContactsActivity;
 import com.example.chatinterface.Activities.ProfileActivity;
 import com.example.chatinterface.model.Contacts;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
-import android.text.format.DateFormat;
-import android.text.format.DateUtils;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,9 +44,9 @@ import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -153,29 +151,18 @@ public class chatsFragment extends Fragment {
                                     Log.d("Last Seen Date: ", date);
                                     Log.d("Last Seen Time", time);
                                     userLastSeen = getFormattedLastSeen(date, time);
-                                    Log.d("user last seen", userLastSeen);
-//                                    if (timeInMilliseconds != 0){
-//                                        Log.d(TAG, "Time In Milliseconds: "+ timeInMilliseconds);
-//                                        userLastSeen = getFormattedLastSeen(timeInMilliseconds);
-//                                    }else {
-//                                        Log.d(TAG, "Time In Milliseconds 0!");
-//                                    }
-
-                                } catch (Exception e) {
-                                    Log.d(TAG, "User Last Seen Exception: " + e.toString());
+                                    Log.d("user", userLastSeen);
+//
+                                }
+                                catch (Exception e) {
                                 }
 
 
-                                Log.d(TAG, "Last Seen Time: " + time);
-//                                String lastSeenString = getFormattedLastSeen();
                                 if (state.equals("online")) {
                                     holder.userStatus.setText("online");
-                                    Log.d(TAG, "User Online!");
                                 } else if (state.equals("offline")) {
-                                    Log.d(TAG, "User Offline!");
                                     if (!TextUtils.isEmpty(userLastSeen)) {
                                         holder.userStatus.setText(userLastSeen);
-                                        Log.d(TAG, "User Formatted Last Seen Available!");
                                     } else {
                                         holder.userStatus.setText(" Last seen: " + date + " " + time);
                                         Log.d(TAG, "User Formatted Last Seen Not Available!");
@@ -313,7 +300,7 @@ public class chatsFragment extends Fragment {
 
 
     private String getFormattedLastSeen(String date, String time) throws ParseException {
-        String pattern = "MMM dd, yyyy hh:mm a";
+        String pattern = "dd/MM/yyyy hh:mm a";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
         String temp = date + " " + time;
@@ -328,11 +315,11 @@ public class chatsFragment extends Fragment {
 
 
         if (date1.getDate() == date2.getDate()) {
-            return "Today " + DateFormat.format(pattern, date1.getTime());
-        } else if (date1.getDate() - date2.getDate() == 1) {
-            return "Yesterday " + DateFormat.format(pattern, date1.getTime());
+            return "Today " +  DateFormat.getTimeInstance(DateFormat.SHORT).format(date1);
+        } else if (date2.getDate() - date1.getDate() == 1) {
+            return "Yesterday " + DateFormat.getTimeInstance(DateFormat.SHORT).format(date1);
         } else {
-            return DateFormat.format(pattern, date1.getDate()).toString();
+            return  DateFormat.getDateInstance().format(date1);
         }
 
     }

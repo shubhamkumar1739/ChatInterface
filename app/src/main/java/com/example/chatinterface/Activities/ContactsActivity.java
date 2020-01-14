@@ -7,9 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,7 +33,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactsActivity extends AppCompatActivity {
     private RecyclerView myContactList;
-    private DatabaseReference contactsref, usersRef;
+    private DatabaseReference contactsref, usersRef,dbRef;
     private FirebaseAuth mAuth;
     private String currentUserId;
     private Toolbar toolbar;
@@ -68,6 +71,16 @@ public class ContactsActivity extends AppCompatActivity {
         contactsref = FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserId);
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
+        dbRef=null;
+
+        if (dbRef == null) {
+            dbRef = FirebaseDatabase.getInstance().getReference();
+        }
+
+
+
+
+
 
     }
 
@@ -76,7 +89,7 @@ public class ContactsActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Contacts>().setQuery(contactsref, Contacts.class).build();
-        FirebaseRecyclerAdapter<Contacts, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, ContactsViewHolder>(options) {
+        final FirebaseRecyclerAdapter<Contacts, ContactsViewHolder> adapter = new FirebaseRecyclerAdapter<Contacts, ContactsViewHolder>(options) {
 
 
             @NonNull
@@ -89,6 +102,8 @@ public class ContactsActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         if(dataSnapshot.exists()){
+
+
 
                             if (dataSnapshot.child("UserState").hasChild("state")) {
 
@@ -162,11 +177,31 @@ public class ContactsActivity extends AppCompatActivity {
             }
 
 
+
         };
+
         myContactList.setAdapter(adapter);
+
         adapter.startListening();
 
+
+
+        /*dbRef.child("Contacts").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int size = (int) dataSnapshot.getChildrenCount();
+                Log.d("size", String.valueOf(size));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
     }
+
 
 
     public static class ContactsViewHolder extends RecyclerView.ViewHolder{
@@ -183,4 +218,7 @@ public class ContactsActivity extends AppCompatActivity {
 
         }
     }
+
+
+
 }

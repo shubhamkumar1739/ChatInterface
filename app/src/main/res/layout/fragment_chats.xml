@@ -23,11 +23,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="30dp"
-        android:src="@drawable/communicationn"
-        app:maxImageSize="55dp"
+        android:src="@drawable/fabicon"
+        app:maxImageSize="57dp"
         android:focusable="true"
-        app:fabCustomSize="55dp"
+        app:fabCustomSize="57dp"
         app:backgroundTint="@android:color/holo_blue_bright"
+        android:elevation="6dp"
+        app:borderWidth="0dp"
+        android:backgroundTint="#A09E9E"
+
         />
 
 
