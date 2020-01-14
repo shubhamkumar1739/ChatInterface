@@ -7,17 +7,15 @@
     tools:context="Activities.SplashActivity"
     android:layout_gravity="center"
     android:gravity="center"
-    android:background="@color/colorPrimary"
+    android:background="#134E48"
     >
 
     <Button
         android:id="@+id/img"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:background="@android:color/transparent"
-        android:drawableTop="@drawable/chats"
-
-
+        android:drawableTop="@drawable/pucho"
         />
 
 </RelativeLayout>
