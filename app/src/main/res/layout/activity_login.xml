@@ -122,43 +122,8 @@
                     app:fabCustomSize="70dp"
                     app:maxImageSize="70dp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
 
 
-                    <LinearLayout
-                        android:id="@+id/phone_login_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_gravity="center"
-                        android:clickable="true">
-
-
-                    <Button
-                        android:id="@+id/phone_login_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:text="Login using"
-                        android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="#222222"
-                        android:textSize="16sp"
-                        android:layout_marginTop="6dp"
-                        android:textAllCaps="false"
-                        />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/smartp"
-                            android:layout_marginTop="6dp"
-                            android:layout_gravity="center"/>
-
-                    </LinearLayout>
 
 
                     <Button
@@ -171,12 +136,13 @@
                         android:textColor="#222222"
                         android:textSize="16sp"
                         android:layout_gravity="center_horizontal"
-                        android:textAllCaps="false"/>
+                        android:textAllCaps="false"
+                        android:layout_marginTop="20dp"/>
 
 
 
 
-                </LinearLayout>
+
 
 
             </LinearLayout>

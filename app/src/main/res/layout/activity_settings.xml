@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.SettingsActivity"
-    android:background="#ffffff">
+    >
 
     <include
         android:id="@+id/settings_toolbar"
@@ -23,6 +23,7 @@
         app:civ_border_color="@color/colorPrimary"
         android:layout_marginTop="100dp"
         />
+
     <EditText
         android:id="@+id/set_user_name"
         android:layout_width="match_parent"
@@ -34,7 +35,6 @@
         android:drawableLeft="@drawable/edit_profile"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"
-        android:background="@drawable/inputs"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:padding="6dp"
@@ -53,12 +53,13 @@
         android:drawableLeft="@drawable/edit_status"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"
-        android:background="@drawable/inputs"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:padding="6dp"
         android:layout_marginTop="15dp"
         />
+
+
 
 
     <Button
@@ -67,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/set_profile_status"
         android:inputType="textImeMultiLine"
-        android:hint="update status"
+        android:hint="Save"
         android:textAlignment="center"
         android:textColor="@android:color/background_light"
         android:textStyle="bold"
@@ -76,7 +77,7 @@
         android:layout_marginEnd="15dp"
         android:padding="6dp"
         android:textSize="20sp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         />
 
 

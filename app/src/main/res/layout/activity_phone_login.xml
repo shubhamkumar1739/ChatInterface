@@ -4,102 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/register"
     tools:context=".Activities.PhoneLoginActivity">
 
-    <EditText
-        android:id="@+id/phone_number_input"
+    <TextView
+        android:id="@+id/textview1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="17dp"
-        android:layout_marginEnd="17dp"
-        android:layout_marginTop="180dp"
-        android:background="@drawable/inputs"
-        android:padding="8dp"
-        android:hint="write phone number here..."
-        android:textAllCaps="false"
-        android:textSize="15sp"
-        android:layout_alignParentLeft="true"
-        android:drawableStart="@drawable/phone"
-        android:drawableLeft="@drawable/phone"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Always add your country code!"
-        android:textColor="#8B184A"
-        android:layout_below="@+id/phone_number_input"
-        android:layout_marginTop="2dp"
-        android:gravity="end"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="23dp"
-        android:textAlignment="center"
-        android:textSize="14sp"
         android:layout_centerHorizontal="true"
-        />
+        android:layout_marginTop="260dp"></TextView>
+
+
+    <RelativeLayout
+        android:id="@+id/phoneAuth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview1"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:padding="8dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Phone Number:"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/ccp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    app:ccp_defaultNameCode="IN"/>
+
+
+                <EditText
+                    android:id="@+id/phone_number_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_alignParentStart="true"
+                    android:hint="write phone number here..."
+                    android:inputType="phone"
+                    android:padding="8dp"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="15sp"
+
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/phone_verification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/phoneAuth"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="17dp"
-        android:layout_marginEnd="17dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/inputs"
-        android:padding="5dp"
-        android:layout_below="@+id/text"
-        android:hint="write verification code here..."
-        android:textAllCaps="false"
-        android:textSize="15sp"
         android:layout_alignParentLeft="true"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="17dp"
+        android:background="@drawable/inputs"
         android:drawableStart="@drawable/password"
         android:drawableLeft="@drawable/password"
+        android:hint="write verification code here..."
+        android:padding="5dp"
         android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="15sp"
         android:textStyle="bold"
+        android:textColorHint="@android:color/white"
         android:visibility="invisible"
-        />
-
+         />
 
 
     <Button
         android:id="@+id/send_ver_code_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="send verification code"
-        android:textAllCaps="false"
-        android:layout_marginStart="17dp"
-        android:layout_marginEnd="17dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/buttons"
         android:layout_below="@+id/phone_verification"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        android:textSize="19sp"
-        android:textColor="@android:color/background_light"
-
-        />
-
-    <Button
-        android:id="@+id/verify_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Verify"
-        android:textAllCaps="false"
         android:layout_marginStart="17dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="17dp"
-        android:layout_marginTop="4dp"
         android:background="@drawable/buttons"
-        android:layout_below="@+id/send_ver_code_button"
+        android:text="send verification code"
         android:textAlignment="center"
-        android:textStyle="bold"
-        android:textSize="19sp"
+        android:textAllCaps="false"
         android:textColor="@android:color/background_light"
-        android:visibility="invisible"
+        android:textSize="19sp"
+        android:textStyle="bold"
 
         />
 

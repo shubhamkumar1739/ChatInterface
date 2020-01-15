@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void sendUserToLoginActivity() {
-        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+        Intent loginIntent = new Intent(MainActivity.this, PhoneLoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(loginIntent);
         finish();
@@ -392,7 +392,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
 
-           // outputFileUri = getCaptureImageOutputUri();
             group_photo.setImageBitmap(photo);
 
         } else if (requestCode == GALLERY && resultCode == Activity.RESULT_OK) {
@@ -416,14 +415,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-   /* private Uri getCaptureImageOutputUri() {
-        Uri outputFileUri = null;
-        File getImage = getExternalCacheDir();
-        if (getImage != null) {
-            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "profile.png"));
-        }
-        return outputFileUri;
-    }*/
+
 
 
     private String saveImage(Bitmap myBitmap) {

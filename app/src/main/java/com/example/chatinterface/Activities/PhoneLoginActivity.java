@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.chatinterface.R;
@@ -21,21 +22,27 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.hbb20.CountryCodePicker;
 
 import org.w3c.dom.Text;
 
 import java.util.concurrent.TimeUnit;
 
 public class PhoneLoginActivity extends AppCompatActivity {
-    private Button sendVerificationcodeButton,verifyButton;
+    private Button sendVerificationcodeButton;
     private EditText inputPhoneNumber,inputVerificationCode;
 
+    private CountryCodePicker ccp;
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
+
     private FirebaseAuth mAuth;
     private ProgressDialog loadingBar;
+
+    private RelativeLayout relativeLayout;
+    private  String phoneNumber = "",checker = "";
 
 
     @Override
@@ -43,73 +50,83 @@ public class PhoneLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
 
-        sendVerificationcodeButton=findViewById(R.id.send_ver_code_button);
-        verifyButton=findViewById(R.id.verify_button);
+
+
+
+
         inputPhoneNumber=findViewById(R.id.phone_number_input);
         inputVerificationCode=findViewById(R.id.phone_verification);
+
+        sendVerificationcodeButton=findViewById(R.id.send_ver_code_button);
+        relativeLayout = findViewById(R.id.phoneAuth);
+
+        ccp = findViewById(R.id.ccp);
+        ccp.registerCarrierNumberEditText(inputPhoneNumber);
+
+
         mAuth=FirebaseAuth.getInstance();
+
         loadingBar=new ProgressDialog(this,R.style.MyAlertDialogStyle);
 
-        sendVerificationcodeButton.setOnClickListener(new View.OnClickListener() {
+        sendVerificationcodeButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
+
+                if(sendVerificationcodeButton.getText().equals("Submit") || checker.equals("Code Sent")) {
+                    String verificationCode = inputVerificationCode.getText().toString();
+                    if (verificationCode.equals("")) {
+                        Toast.makeText(PhoneLoginActivity.this, "Write verification code first", Toast.LENGTH_SHORT).show();
+                    } else {
 
 
+                        loadingBar.setTitle("Code verification");
+                        loadingBar.setMessage("Please wait, we are Verifying your Pass Code...");
+                        loadingBar.setCanceledOnTouchOutside(false);
+                        loadingBar.show();
 
-                String phoneNumber = inputPhoneNumber.getText().toString();
-                if(TextUtils.isEmpty(phoneNumber)){
-                    Toast.makeText(PhoneLoginActivity.this,"please enter your phone number first...",Toast.LENGTH_SHORT).show();
+                        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
+                        signInWithPhoneAuthCredential(credential);
 
-                }
-                else{
 
-                    loadingBar.setTitle("Phone verification");
-                    loadingBar.setMessage("Please wait, we will be authenticating your phone");
-                    loadingBar.setCanceledOnTouchOutside(false);
-                    loadingBar.show();
-
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                            phoneNumber,        // Phone number to verify
-                            60,                 // Timeout duration
-                            TimeUnit.SECONDS,   // Unit of timeout
-                            PhoneLoginActivity.this,               // Activity (for callback binding)
-                            callbacks);        // OnVerificationStateChangedCallbacks
+                    }
 
 
                 }
 
+                    else {
 
-            }
+
+                        phoneNumber = ccp.getFullNumberWithPlus();
+                        if (TextUtils.isEmpty(phoneNumber)) {
+                            Toast.makeText(PhoneLoginActivity.this, "please enter your phone number first...", Toast.LENGTH_SHORT).show();
+
+                        } else {
+
+                            loadingBar.setTitle("Phone Number verification");
+                            loadingBar.setMessage("Please wait, we will be verifying your Phone Number");
+                            loadingBar.setCanceledOnTouchOutside(false);
+                            loadingBar.show();
+
+                            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                                    phoneNumber,        // Phone number to verify
+                                    60,                 // Timeout duration
+                                    TimeUnit.SECONDS,   // Unit of timeout
+                                    PhoneLoginActivity.this,               // Activity (for callback binding)
+                                    callbacks);        // OnVerificationStateChangedCallbacks
+
+
+                        }
+                    }
+
+
+                }
+
         });
 
 
-        verifyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                sendVerificationcodeButton.setVisibility(View.INVISIBLE);
-                inputPhoneNumber.setVisibility(View.INVISIBLE);
-
-                String verificationCode= inputVerificationCode.getText().toString();
-                if(TextUtils.isEmpty(verificationCode)){
-                    Toast.makeText(PhoneLoginActivity.this,"please write verification code first",Toast.LENGTH_SHORT).show();
-
-                }
-                else{
-
-                    loadingBar.setTitle("Code verification");
-                    loadingBar.setMessage("Please wait, we will be verifying your verification Code");
-                    loadingBar.setCanceledOnTouchOutside(false);
-                    loadingBar.show();
-
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
-                    signInWithPhoneAuthCredential(credential);
-
-                }
-
-
-            }
-        });
 
 
         callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -126,35 +143,30 @@ public class PhoneLoginActivity extends AppCompatActivity {
             public void onVerificationFailed(FirebaseException e)
             {
 
-                loadingBar.dismiss();
                 Toast.makeText(PhoneLoginActivity.this,"invalid,please enter correct phone number with your country code",Toast.LENGTH_SHORT).show();
 
-                sendVerificationcodeButton.setVisibility(View.VISIBLE);
-                inputPhoneNumber.setVisibility(View.VISIBLE);
+                loadingBar.dismiss();
+                relativeLayout.setVisibility(View.VISIBLE);
+                sendVerificationcodeButton.setText("send verification code");
+                inputVerificationCode.setVisibility(View.GONE);
 
 
-                verifyButton.setVisibility(View.INVISIBLE);
-                inputVerificationCode.setVisibility(View.INVISIBLE);
 
             }
 
 
-            public void onCodeSent(@NonNull String verificationId,
-                                   @NonNull PhoneAuthProvider.ForceResendingToken token) {
+            public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
 
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
                 mResendToken = token;
+                relativeLayout.setVisibility(View.GONE);
+                checker = "Code Sent";
+                sendVerificationcodeButton.setText("Submit");
+                inputVerificationCode.setVisibility(View.VISIBLE);
 
                 loadingBar.dismiss();
                 Toast.makeText(PhoneLoginActivity.this,"code has been sent, please check and verify...",Toast.LENGTH_SHORT).show();
-
-                sendVerificationcodeButton.setVisibility(View.INVISIBLE);
-                inputPhoneNumber.setVisibility(View.INVISIBLE);
-
-
-                verifyButton.setVisibility(View.VISIBLE);
-                inputVerificationCode.setVisibility(View.VISIBLE);
 
 
             }
@@ -179,6 +191,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
 
                         else {
 
+                            loadingBar.dismiss();
                             String message = task.getException().toString();
                             Toast.makeText(PhoneLoginActivity.this,"Error: "  +  message,Toast.LENGTH_SHORT).show();
 
@@ -187,6 +200,11 @@ public class PhoneLoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
+
+
+
 
     private void sendUserToMainActivity() {
         Intent mainIntent =new Intent(PhoneLoginActivity.this,MainActivity.class);

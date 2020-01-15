@@ -42,11 +42,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mauth;
     private ProgressDialog loadingBar;
-    private Button  phoneLoginButton;
     private EditText userPassword, userEmail;
     private Button needNewAccountLink;
     private FloatingActionButton loginButton;
-    private LinearLayout phone_login_layout;
 
 
 
@@ -80,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        phone_login_layout.setOnClickListener(new View.OnClickListener() {
+        /*phone_login_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent phoneloginIntent = new Intent(LoginActivity.this, PhoneLoginActivity.class);
@@ -88,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
+*/
 
     }
 
@@ -158,12 +156,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initializeFields() {
         loginButton = findViewById(R.id.login_button);
-        phoneLoginButton = findViewById(R.id.phone_login_button);
         userEmail = findViewById(R.id.login_email);
         userPassword = findViewById(R.id.login_password);
         needNewAccountLink = findViewById(R.id.need_new_account_link);
         loadingBar = new ProgressDialog(this,R.style.MyAlertDialogStyle);
-        phone_login_layout = findViewById(R.id.phone_login_layout);
 
 
 
