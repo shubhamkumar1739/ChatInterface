@@ -132,7 +132,7 @@ public class chatsFragment extends Fragment {
 
                                 ret_Img[0] = dataSnapshot.child("image").getValue().toString();
                                 Log.d("img", ret_Img[0]);
-                                Picasso.get().load(ret_Img[0]).into(holder.profileImage);
+                                Picasso.get().load(ret_Img[0]).placeholder(R.drawable.profile_image).into(holder.profileImage);
 
 
                             }
@@ -150,11 +150,15 @@ public class chatsFragment extends Fragment {
                                 try {
                                     Log.d("Last Seen Date: ", date);
                                     Log.d("Last Seen Time", time);
+
                                     userLastSeen = getFormattedLastSeen(date, time);
+
+
                                     Log.d("user", userLastSeen);
 //
                                 }
                                 catch (Exception e) {
+                                    e.printStackTrace();
                                 }
 
 
@@ -196,7 +200,7 @@ public class chatsFragment extends Fragment {
                                     ImageButton info = dialogLayout.findViewById(R.id.info);
 
                                     textView.setText("  " + retName);
-                                    Picasso.get().load(ret_Img[0]).into(imageView);
+                                    Picasso.get().load(ret_Img[0]).placeholder(R.drawable.profile_image).into(imageView);
                                     message.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -300,7 +304,7 @@ public class chatsFragment extends Fragment {
 
 
     private String getFormattedLastSeen(String date, String time) throws ParseException {
-        String pattern = "dd/MM/yyyy hh:mm a";
+        String pattern = "MMM dd, yyyy hh:mm a ";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
         String temp = date + " " + time;

@@ -84,7 +84,7 @@
         android:background="@drawable/inputs"
         android:drawableStart="@drawable/password"
         android:drawableLeft="@drawable/password"
-        android:hint="write verification code here..."
+        android:hint="verification code here..."
         android:padding="5dp"
         android:textAlignment="center"
         android:textAllCaps="false"
@@ -92,6 +92,7 @@
         android:textStyle="bold"
         android:textColorHint="@android:color/white"
         android:visibility="invisible"
+        android:textColor="@android:color/white"
          />
 
 

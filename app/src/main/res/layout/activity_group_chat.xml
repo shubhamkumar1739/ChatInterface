@@ -24,12 +24,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <TextView
                 android:id="@+id/group_chat_text_display"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:textAllCaps="false"
                 android:padding="10dp"
                 android:textSize="20sp"
@@ -37,6 +38,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
                 android:layout_marginBottom="60dp"
+
                 />
 
         </LinearLayout>
