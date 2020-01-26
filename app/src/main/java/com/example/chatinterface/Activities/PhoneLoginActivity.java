@@ -22,6 +22,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.hbb20.CountryCodePicker;
 
 import org.w3c.dom.Text;
@@ -43,16 +46,13 @@ public class PhoneLoginActivity extends AppCompatActivity {
 
     private RelativeLayout relativeLayout;
     private  String phoneNumber = "",checker = "";
+    private DatabaseReference usersRef;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_login);
-
-
-
-
 
         inputPhoneNumber=findViewById(R.id.phone_number_input);
         inputVerificationCode=findViewById(R.id.phone_verification);
@@ -65,6 +65,8 @@ public class PhoneLoginActivity extends AppCompatActivity {
 
 
         mAuth=FirebaseAuth.getInstance();
+
+        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         loadingBar=new ProgressDialog(this,R.style.MyAlertDialogStyle);
 
@@ -147,7 +149,7 @@ public class PhoneLoginActivity extends AppCompatActivity {
 
                 loadingBar.dismiss();
                 relativeLayout.setVisibility(View.VISIBLE);
-                sendVerificationcodeButton.setText("send verification code");
+                sendVerificationcodeButton.setText("CONTINUE");
                 inputVerificationCode.setVisibility(View.GONE);
 
 
@@ -183,9 +185,24 @@ public class PhoneLoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                            loadingBar.dismiss();
-                            Toast.makeText(PhoneLoginActivity.this,"Logged in successfully",Toast.LENGTH_SHORT).show();
+
+                            String currentUserId = mAuth.getCurrentUser().getUid();
+                            String deviceToken = FirebaseInstanceId.getInstance().getToken();
+                            usersRef.child(currentUserId).child("device_token")
+                                    .setValue(deviceToken).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+
+                                    }
+
+                                }
+                            });
+
+
                             sendUserToMainActivity();
+                            loadingBar.dismiss();
+
 
                         }
 

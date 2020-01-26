@@ -6,7 +6,7 @@
     <string name="display_username">Display UserName</string>
     <string name="last_seen">Last seen</string>
     <string name="cancel">Cancel</string>
-    <string name="accept">Accept</string>
+    <string name="accept">Pending</string>
     <string name="user_name">User Name</string>
     <string name="user_status">User Status</string>
     <string name="hint_email">Email</string>

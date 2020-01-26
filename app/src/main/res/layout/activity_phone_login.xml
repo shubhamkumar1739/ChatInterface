@@ -30,26 +30,29 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Phone Number:"
+                android:text="Country Code"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:visibility="invisible"/>
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:gravity="center"
+                android:layout_gravity="center">
 
                 <com.hbb20.CountryCodePicker
                     android:id="@+id/ccp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white"
-                    app:ccp_defaultNameCode="IN"/>
+                    android:background="@null"
+                    app:ccp_contentColor="@android:color/white"
+                    />
 
 
                 <EditText
@@ -57,14 +60,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_alignParentStart="true"
-                    android:hint="write phone number here..."
+                    android:hint="PHONE  NUMBER"
                     android:inputType="phone"
-                    android:padding="8dp"
                     android:singleLine="true"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@android:color/darker_gray"
+                    android:textColorHint="@android:color/white"
                     android:textSize="15sp"
-
+                    android:textColor="@android:color/white"
                     />
 
             </LinearLayout>
@@ -73,13 +74,11 @@
 
     <EditText
         android:id="@+id/phone_verification"
-        android:layout_width="match_parent"
+        android:layout_width="336dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/phoneAuth"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_marginStart="17dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="17dp"
         android:background="@drawable/inputs"
         android:drawableStart="@drawable/password"
@@ -88,33 +87,31 @@
         android:padding="5dp"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:textColorHint="@android:color/white"
-        android:visibility="invisible"
         android:textColor="@android:color/white"
-         />
+        android:textColorHint="@android:color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
 
 
     <Button
         android:id="@+id/send_ver_code_button"
-        android:layout_width="match_parent"
+        android:layout_width="336dp"
+        android:layout_centerInParent="true"
         android:layout_height="wrap_content"
         android:layout_below="@+id/phone_verification"
         android:layout_marginStart="17dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="17dp"
         android:background="@drawable/buttons"
-        android:text="send verification code"
+        android:text="CONTINUE"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textColor="@android:color/background_light"
-        android:textSize="19sp"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
         android:textStyle="bold"
-
         />
-
-
 
 
 </RelativeLayout>
