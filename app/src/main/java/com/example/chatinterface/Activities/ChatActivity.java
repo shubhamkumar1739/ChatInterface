@@ -6,18 +6,23 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -25,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
@@ -38,7 +44,9 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,6 +61,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 
+import java.io.File;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,6 +75,8 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+
 public class ChatActivity extends AppCompatActivity {
 
     private final String TAG = "chat_activity";
@@ -76,6 +87,7 @@ public class ChatActivity extends AppCompatActivity {
     private Toolbar chatToolbar;
 
     private ImageButton sendMessageButton, sendFilesButton;
+    private ImageButton sendVoiceNote=null;
 
 
     private EditText messageInputText;
@@ -99,6 +111,19 @@ public class ChatActivity extends AppCompatActivity {
     private String userLastSeenString;
 
 
+    private FirebaseUser currentUserId;
+    private boolean mStartRecording = true;
+    public static final int RECORD_AUDIO = 0;
+    public static final int SAVE_AUDIO = 1;
+
+    private static final String AUDIO_RECORDER_FILE_EXT_3GP = ".3gp";
+    private static final String AUDIO_RECORDER_FILE_EXT_MP4 = ".mp4";
+    private Intent intent;
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,11 +132,12 @@ public class ChatActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         messageSenderId = mAuth.getCurrentUser().getUid();
         RootRef = FirebaseDatabase.getInstance().getReference();
+        currentUserId = mAuth.getInstance().getCurrentUser();
 
         msgReceiverId = getIntent().getExtras().get("visit_user_id").toString();
         msgReceiverName = getIntent().getExtras().get("visit_user_name").toString();
         msgReceiverImage = getIntent().getExtras().get("visit_user_image").toString();
-        Log.d("img",msgReceiverImage);
+        Log.d("img", msgReceiverImage);
 
         initialiseControllers();
 
@@ -243,6 +269,7 @@ public class ChatActivity extends AppCompatActivity {
 
         messageInputText = findViewById(R.id.input_message);
         sendFilesButton = findViewById(R.id.send_files_btn);
+        sendVoiceNote = findViewById(R.id.send_voice_note);
 
 
         UserMessagesList = findViewById(R.id.private_messages_list_of_users);
@@ -250,13 +277,12 @@ public class ChatActivity extends AppCompatActivity {
         adapter = new MessageAdapter(messagesList);
 
 
-
         linearLayoutManager = new LinearLayoutManager(this);
         UserMessagesList.setLayoutManager(linearLayoutManager);
 
         UserMessagesList.setAdapter(adapter);
 
-        loadingBar = new ProgressDialog(this,R.style.MyAlertDialogStyle);
+        loadingBar = new ProgressDialog(this, R.style.MyAlertDialogStyle);
 
 
         Calendar calendar = Calendar.getInstance();
@@ -267,7 +293,87 @@ public class ChatActivity extends AppCompatActivity {
         SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
         saveCurrentTime = currentTime.format(calendar.getTime());
 
+        sendVoiceNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                if (ActivityCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO);
+                } else {
+                    onRecord(mStartRecording);
+                    mStartRecording = !mStartRecording;
+                }
+
+            }
+        });
+
+
+    }
+
+    private void onRecord(boolean mStartRecording) {
+        intent = new Intent(ChatActivity.this, RecordingService.class);
+
+        if (mStartRecording) {
+            sendVoiceNote.setImageResource(R.drawable.stop);
+            Toast.makeText(getApplicationContext(), "Recording Started", Toast.LENGTH_SHORT).show();
+            File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder");
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+
+
+            intent.putExtra("user_id", currentUserId.getUid());
+            startService(intent);
+
+            //allow the screen to turn off again once recording is finished
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+        } else {
+            //stop recording
+            sendVoiceNote.setImageResource(R.drawable.microphn);
+            Toast.makeText(getApplicationContext(), "Recording Stopped", Toast.LENGTH_SHORT).show();
+
+            if (ActivityCompat.checkSelfPermission(ChatActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ChatActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_AUDIO);
+
+            } else {
+                //start RecordingService
+                ChatActivity.this.stopService(intent);
+                //keep screen on while recording
+                ChatActivity.this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+            }
+
+        }
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == RECORD_AUDIO) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onRecord(mStartRecording);
+                mStartRecording = !mStartRecording;
+
+            } else {
+                Toast.makeText(ChatActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
+            }
+
+        } else if (requestCode == SAVE_AUDIO) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                ChatActivity.this.stopService(intent);
+                //allow the screen to turn off again once recording is finished
+                ChatActivity.this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+            } else {
+                //User denied Permission.
+                Toast.makeText(ChatActivity.this, "Storage Permission Denied", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
 
@@ -339,24 +445,19 @@ public class ChatActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
 
                         loadingBar.dismiss();
-                        Toast.makeText(ChatActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(ChatActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
 
                     }
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot)
-                    {
-                        double p = (100.0*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
-                        loadingBar.setMessage((int) p + "% Uploading..." );
-
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                        double p = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        loadingBar.setMessage((int) p + "% Uploading...");
 
 
                     }
                 });
-
-
 
 
             } else if (checker.equals("image")) {
@@ -458,7 +559,6 @@ public class ChatActivity extends AppCompatActivity {
                     Log.d("time", time);
 
 
-
                     try {
                         long timeInMilliseconds = lastSeenInMilliseconds(time);
                         userLastSeenString = lastSeenTime(String.valueOf(timeInMilliseconds));
@@ -469,8 +569,8 @@ public class ChatActivity extends AppCompatActivity {
 //                            Log.d(TAG, "Time In Milliseconds 0!");
 //                        }
 
-                    }catch (Exception e){
-                        Log.d(TAG, "User Last Seen Exception: "+e.toString());
+                    } catch (Exception e) {
+                        Log.d(TAG, "User Last Seen Exception: " + e.toString());
                     }
 
 
@@ -480,10 +580,10 @@ public class ChatActivity extends AppCompatActivity {
 
                     } else if (state.equals("offline")) {
                         Log.d(TAG, "User Offline!");
-                        if (!TextUtils.isEmpty(userLastSeenString)){
+                        if (!TextUtils.isEmpty(userLastSeenString)) {
                             userLastSeen.setText(" Last seen: " + date + " " + userLastSeenString);
                             Log.d(TAG, "User Formatted Last Seen Available!");
-                        }else {
+                        } else {
                             userLastSeen.setText(" Last seen: " + date + " " + time);
                             Log.d(TAG, "User Formatted Last Seen Not Available!");
                         }
@@ -546,7 +646,7 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()) {
-                      //  Toast.makeText(ChatActivity.this, "Message sent successfully", Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(ChatActivity.this, "Message sent successfully", Toast.LENGTH_SHORT).show();
 
                     } else {
                         Toast.makeText(ChatActivity.this, "Error", Toast.LENGTH_SHORT).show();
@@ -565,7 +665,7 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private long lastSeenInMilliseconds(String time){
+    private long lastSeenInMilliseconds(String time) {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa");
         try {
@@ -576,15 +676,16 @@ public class ChatActivity extends AppCompatActivity {
             int hourToSeconds = calendar.get(Calendar.HOUR_OF_DAY) * 60 * 60;
             int minutesToSeconds = calendar.get(Calendar.MINUTE) * 60;
 
-            int totalSeconds = hourToSeconds + minutesToSeconds ;
-            lastSeenInMilliseconds = new GregorianCalendar().getTimeInMillis()+ totalSeconds *1000;
-            Log.d(TAG, "lastSeenInMilliseconds: "+String.valueOf(lastSeenInMilliseconds));
+            int totalSeconds = hourToSeconds + minutesToSeconds;
+            lastSeenInMilliseconds = new GregorianCalendar().getTimeInMillis() + totalSeconds * 1000;
+            Log.d(TAG, "lastSeenInMilliseconds: " + String.valueOf(lastSeenInMilliseconds));
         } catch (ParseException e) {
-            Log.d(TAG, "Time Conversion Exception: "+e.toString());
+            Log.d(TAG, "Time Conversion Exception: " + e.toString());
         }
         return lastSeenInMilliseconds;
 
     }
+
     private String getFormattedLastSeen(long smsTimeInMilliseconds) {
         Calendar smsTime = Calendar.getInstance();
         smsTime.setTimeInMillis(smsTimeInMilliseconds);
@@ -594,9 +695,9 @@ public class ChatActivity extends AppCompatActivity {
         final String timeFormatString = "h:mm aa";
         final String dateTimeFormatString = "EEEE, MMMM d, h:mm aa";
         final long HOURS = 60 * 60 * 60;
-        if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE) ) {
+        if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE)) {
             return "Today " + DateFormat.format(timeFormatString, smsTime);
-        } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1  ){
+        } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1) {
             return "Yesterday " + DateFormat.format(timeFormatString, smsTime);
         } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
             return DateFormat.format(dateTimeFormatString, smsTime).toString();
@@ -605,7 +706,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private String lastSeenTime(String timeInMilliseconds){
+    private String lastSeenTime(String timeInMilliseconds) {
         Calendar now = Calendar.getInstance();
         return String.valueOf(DateUtils.getRelativeTimeSpanString(Long.parseLong(timeInMilliseconds), now.getTimeInMillis(), DateUtils.DAY_IN_MILLIS));
     }

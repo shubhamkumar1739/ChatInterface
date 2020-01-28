@@ -11,4 +11,6 @@
     <string name="user_status">User Status</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
+    <string name="default_file_name">My Recording</string>
+
 </resources>

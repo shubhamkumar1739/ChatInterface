@@ -26,12 +26,16 @@
     <RelativeLayout
         android:id="@+id/chat_linear_layout"
         android:layout_alignParentStart="true"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:background="@android:color/background_light">
+        android:background="@color/cardview_light_background"
+        android:layout_marginBottom="6dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        >
 
 
         <ImageButton
@@ -41,35 +45,47 @@
             android:src="@drawable/send_files"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:backgroundTint="@android:color/white"/>
+            android:backgroundTint="@android:color/white"
+            android:layout_centerInParent="true"/>
 
 
+        <ImageButton
+            android:id="@+id/send_voice_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/white"
+            android:src="@drawable/microphn"
+            android:layout_toRightOf="@+id/send_files_btn"
+            android:layout_centerInParent="true"
 
-    <EditText
+            />
+
+        <EditText
         android:id="@+id/input_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="please type a message here"
-        android:padding="15dp"
-        android:maxLines="5"
-        android:layout_toEndOf="@+id/send_files_btn"
+        android:hint="Type a message"
+        android:padding="10dp"
+        android:maxLines="25"
+        android:layout_toEndOf="@+id/send_voice_note"
         android:layout_toStartOf="@+id/send_message_btn"
-        android:layout_toRightOf="@+id/send_files_btn"
+        android:layout_toRightOf="@+id/send_voice_note"
         android:layout_toLeftOf="@+id/send_message_btn" />
 
 
         <ImageButton
             android:id="@+id/send_message_btn"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:src="@drawable/send_message"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:backgroundTint="@android:color/white"/>
-
-
-
+            android:backgroundTint="@android:color/white"
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
+
+
+
 
 </RelativeLayout>

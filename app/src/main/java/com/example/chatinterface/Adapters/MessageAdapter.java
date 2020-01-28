@@ -72,7 +72,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             message_receiver_picture = itemView.findViewById(R.id.msg_receiver_image_view);
 
 
-
         }
     }
 
@@ -145,7 +144,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 holder.senderMessageText.setText(messages.getMessage() + "\n\n" + messages.getTime());
 
 
-
             } else {
 
 
@@ -191,13 +189,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
 
 
-
-
-
-
-
-
-
         //code  for deleting a msg,media or text,doc,pdf
         //sender's part
 
@@ -240,7 +231,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                     holder.itemView.getContext().startActivity(intent);
 
 
-
                                 }
 
 
@@ -269,12 +259,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                     holder.itemView.getContext().startActivity(intent);
 
 
-
                                 } else if (i == 2) {
                                     DeletedMessagesForEveryone(position, holder);
                                     Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
                                     holder.itemView.getContext().startActivity(intent);
-
 
 
                                 }
@@ -285,8 +273,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                         builder.show();
 
 
-                    }
-                    else if (userMessageList.get(position).getType().equals("image")) {
+                    } else if (userMessageList.get(position).getType().equals("image")) {
                         CharSequence options[] = new CharSequence[]{
                                 "Delete for me",
                                 "View this Image",
@@ -308,7 +295,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                     holder.itemView.getContext().startActivity(intent);
 
 
-
                                 } else if (i == 1) {
                                     Intent intent = new Intent(holder.itemView.getContext(), ImageViewerActivity.class);
                                     intent.putExtra("url", userMessageList.get(position).getMessage());
@@ -320,7 +306,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                                     Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
                                     holder.itemView.getContext().startActivity(intent);
-
 
 
                                 }
@@ -366,8 +351,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                     holder.itemView.getContext().startActivity(intent);
 
 
-
-
                                 } else if (i == 1) {
 
 
@@ -383,8 +366,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                         builder.show();
 
 
-                    }
-                    else if (userMessageList.get(position).getType().equals("text")) {
+                    } else if (userMessageList.get(position).getType().equals("text")) {
                         CharSequence options[] = new CharSequence[]{
                                 "Delete for me",
                                 "Cancel",
@@ -404,7 +386,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                     holder.itemView.getContext().startActivity(intent);
 
 
-
                                 }
 
 
@@ -413,8 +394,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                         builder.show();
 
 
-                    }
-                    else if (userMessageList.get(position).getType().equals("image")) {
+                    } else if (userMessageList.get(position).getType().equals("image")) {
                         CharSequence options[] = new CharSequence[]{
                                 "Delete for me",
                                 "View this Image",
@@ -434,7 +414,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                                     Intent intent = new Intent(holder.itemView.getContext(), MainActivity.class);
                                     holder.itemView.getContext().startActivity(intent);
-
 
 
                                 } else if (i == 1) {

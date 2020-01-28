@@ -304,7 +304,7 @@ public class chatsFragment extends Fragment {
 
 
     private String getFormattedLastSeen(String date, String time) throws ParseException {
-        String pattern = "MMM dd, yyyy hh:mm a ";
+        String pattern = "E, MMM dd, yyyy hh:mm a ";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
         String temp = date + " " + time;
@@ -325,7 +325,6 @@ public class chatsFragment extends Fragment {
         } else {
             return  DateFormat.getDateInstance().format(date1);
         }
-
     }
 
 
