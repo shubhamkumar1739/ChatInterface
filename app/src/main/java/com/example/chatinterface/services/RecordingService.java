@@ -1,4 +1,4 @@
-package com.example.chatinterface.Activities;
+package com.example.chatinterface.services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import com.example.chatinterface.Activities.MainActivity;
 import com.example.chatinterface.R;
 import com.example.chatinterface.helper.MySharedPreferences;
 
@@ -25,8 +26,6 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-
-
 
 
 public class RecordingService extends Service {
