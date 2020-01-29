@@ -304,27 +304,66 @@ public class chatsFragment extends Fragment {
 
 
     private String getFormattedLastSeen(String date, String time) throws ParseException {
-        String pattern = "E, MMM dd, yyyy hh:mm a ";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-        String temp = date + " " + time;
-
-        Log.d("temp", temp);
-
-        Date date1 = simpleDateFormat.parse(temp);
+        int dd,MM,yyyy;
+        if(date.length() == 17)
+        {
+            MM = getMonth(date.substring(5, 8));
+            dd = Integer.parseInt(date.substring(9,11));
+            yyyy = Integer.parseInt(date.substring(13))-1900;
+        }
+        else
+        {
+            MM = getMonth(date.substring(5, 8));
+            dd = Integer.parseInt(date.substring(9,10));
+            yyyy = Integer.parseInt(date.substring(12));
+        }
+        Date date1 = new Date(yyyy,MM,dd);
         Log.d("date1", String.valueOf(date1));
         Calendar now = Calendar.getInstance();
-        Date date2 = now.getTime();
+        Date date2 = new Date(now.getTimeInMillis());
         Log.d("date2", String.valueOf(date2));
 
 
-        if (date1.getDate() == date2.getDate()) {
+        if (date1.equals(date2)) {
             return "Today " +  DateFormat.getTimeInstance(DateFormat.SHORT).format(date1);
         } else if (date2.getDate() - date1.getDate() == 1) {
             return "Yesterday " + DateFormat.getTimeInstance(DateFormat.SHORT).format(date1);
         } else {
             return  DateFormat.getDateInstance().format(date1);
         }
+    }
+
+    private int getMonth(String s) {
+        int result = -1;
+        switch (s)
+        {
+            case "Jan" : result = 1;
+                break;
+            case "Feb" : result = 2;
+                break;
+            case "Mar" : result = 3;
+                break;
+            case "Apr" : result = 4;
+                break;
+            case "May" : result = 5;
+                break;
+            case "Jun" : result = 6;
+                break;
+            case "Jul" : result = 7;
+                break;
+            case "Aug" : result = 8;
+                break;
+            case "Sep" : result = 9;
+                break;
+            case "Oct" : result = 10;
+                break;
+            case "Nov" : result =11;
+                break;
+            case "Dec" : result =12;
+                break;
+        }
+        return result;
     }
 
 
